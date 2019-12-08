@@ -10,6 +10,7 @@ class EyeCapture extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
         primarySwatch: Colors.blueGrey,
+        buttonColor: Colors.blueGrey,
       ),
       home: EyeCaptureSplashScreen(),
     );

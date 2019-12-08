@@ -1,5 +1,6 @@
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
+import 'package:eye_capture/ui/opening_pages/patient_selection_page.dart';
 import 'package:eye_capture/ui/opening_pages/splash_bloc.dart';
 import 'package:eye_capture/ui/opening_pages/splash_event.dart';
 import 'package:eye_capture/ui/opening_pages/splash_state.dart';
@@ -36,7 +37,12 @@ class _EyeCaptureSplashScreenState extends State<EyeCaptureSplashScreen> {
         bloc: _splashBloc,
         listener: (context, state) {
           if (state is DataFetchSuccessState) {
-            print("Navigating to new page");
+            // TODO: go to pin page or patient selection page depending on data fetch
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PatientTypeSelectionPage(),
+                ));
           } else if (state is DataFetchFailureState) {
             print("Something went wrong");
           }
