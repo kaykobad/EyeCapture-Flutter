@@ -65,7 +65,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
           _getRadioButtons(),
           SizedBox(height: 15.0),
           _getDateTimeField(),
-          SizedBox(height: 15.0),
+          SizedBox(height: 20.0),
           _getTakePhotoButton(),
         ],
       ),
