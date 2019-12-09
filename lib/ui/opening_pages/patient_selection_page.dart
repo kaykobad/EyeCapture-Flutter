@@ -1,8 +1,14 @@
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_form.dart';
 import 'package:flutter/material.dart';
 
-class PatientTypeSelectionPage extends StatelessWidget {
+class PatientTypeSelectionPage extends StatefulWidget {
+  @override
+  _PatientTypeSelectionPageState createState() => _PatientTypeSelectionPageState();
+}
+
+class _PatientTypeSelectionPageState extends State<PatientTypeSelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,11 +56,14 @@ class PatientTypeSelectionPage extends StatelessWidget {
         ),
       ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
-        side: BorderSide(color: Colors.blueGrey)
+          borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
+          side: BorderSide(color: Colors.blueGrey)),
+      padding: EdgeInsets.symmetric(
+        horizontal: BUTTON_PADDING_LEFT,
+        vertical: BUTTON_PADDING_TOP,
       ),
-      padding: EdgeInsets.symmetric(horizontal: BUTTON_PADDING_LEFT, vertical: BUTTON_PADDING_TOP,),
-      onPressed: () => print("New patient pressed"),
+      onPressed: () => Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => NewPatientForm())),
     );
   }
 
@@ -68,10 +77,12 @@ class PatientTypeSelectionPage extends StatelessWidget {
         ),
       ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
-        side: BorderSide(color: Colors.blueGrey)
+          borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
+          side: BorderSide(color: Colors.blueGrey)),
+      padding: EdgeInsets.symmetric(
+        horizontal: BUTTON_PADDING_LEFT,
+        vertical: BUTTON_PADDING_TOP,
       ),
-      padding: EdgeInsets.symmetric(horizontal: BUTTON_PADDING_LEFT, vertical: BUTTON_PADDING_TOP,),
       onPressed: () => print("Old patient pressed"),
     );
   }
