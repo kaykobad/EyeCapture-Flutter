@@ -1,4 +1,5 @@
 import 'package:eye_capture/constants/numbers.dart';
+import 'package:eye_capture/ui/new_patient/camera_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:intl/intl.dart';
@@ -220,6 +221,8 @@ class _NewPatientFormState extends State<NewPatientForm> {
       onPressed: () {
         print("Take photo pressed");
         _validateInputs();
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => CameraPreview()));
       },
     );
   }
