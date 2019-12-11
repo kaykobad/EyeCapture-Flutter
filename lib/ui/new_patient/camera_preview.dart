@@ -1,3 +1,4 @@
+import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:torch/torch.dart';
@@ -60,7 +61,14 @@ class _CameraPreviewState extends State<CameraPreview> {
   }
 
   Widget _cameraPreviewWidget() {
-    return Container(color: Colors.blueGrey);
+    return Container(
+      margin: EdgeInsets.all(CAMERA_PADDING),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        shape: BoxShape.circle,
+          border: Border.all(color: Colors.blueAccent)
+      ),
+    );
   }
 
   Widget _flashTogglesRowWidget() {
