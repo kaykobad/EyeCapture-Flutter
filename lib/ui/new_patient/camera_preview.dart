@@ -11,11 +11,13 @@ class CameraPreview extends StatefulWidget {
 class _CameraPreviewState extends State<CameraPreview> {
   bool isFlashOn;
   bool hasFlashLight;
+  double scale;
 
   @override
   void initState() {
     super.initState();
     isFlashOn = false;
+    scale = 1.0;
     initLamp();
   }
 
@@ -61,13 +63,52 @@ class _CameraPreviewState extends State<CameraPreview> {
   }
 
   Widget _cameraPreviewWidget() {
-    return Container(
-      margin: EdgeInsets.all(CAMERA_PADDING),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        shape: BoxShape.circle,
-          border: Border.all(color: Colors.blueAccent)
-      ),
+    return Column(
+      children: <Widget>[
+        _getSliderController(),
+        Container(
+          margin: EdgeInsets.all(CAMERA_PADDING),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.blueAccent),
+          ),
+          child: Transform.scale(
+            scale: scale,
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                color: Colors.black45,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row _getSliderController() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Slider(
+            activeColor: Colors.blue,
+            min: 1.0,
+            max: 3.0,
+            divisions: 20,
+            value: scale,
+            onChanged: (value) {
+              setState(() {
+                scale = value;
+              });
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 5.0, right: 20.0),
+          child: Text("${double.parse(scale.toStringAsFixed(2))} X"),
+        ),
+      ],
     );
   }
 
