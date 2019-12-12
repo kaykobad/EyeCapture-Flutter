@@ -61,6 +61,11 @@ class DBProvider {
     return await db.insert("Patient", patient.toMap());
   }
 
+  Future<int> deletePatientById(int id) async {
+    final db = await database;
+    return await db.delete("Patient", where: "id = ?", whereArgs: [id]);
+  }
+
   Future<List<Patient>> getAllPatients() async {
     final db = await database;
     var res = await db.query("Patient");

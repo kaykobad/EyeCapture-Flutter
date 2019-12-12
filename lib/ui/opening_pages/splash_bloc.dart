@@ -14,11 +14,21 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       yield LoadingDataFetchState();
 
       // data fetch will go here
-      Patient patient1 = Patient(patientName: "Kaykobad Reza", patientId: "kaykobad", age: 24, sex: "male");
-      DBProvider.db.insertPatient(patient1);
-      for(Patient p in await DBProvider.db.getAllPatients()) {
-        print(p.toString());
-      }
+//      Patient patient1 = Patient(patientName: "Kaykobad Reza", patientId: "kaykobad", age: 24, sex: "male");
+//      DBProvider.db.insertPatient(patient1);
+//      for(Patient p in await DBProvider.db.getAllPatients()) {
+//        print(p.toString());
+//      }
+//      DBProvider.db.deletePatientById(1);
+//      DBProvider.db.insertPatient(patient1);
+//      for(Patient p in await DBProvider.db.getAllPatients()) {
+//        print(p.toString());
+//      }
+//      DBProvider.db.deletePatientById(4);
+//      DBProvider.db.insertPatient(patient1);
+//      for(Patient p in await DBProvider.db.getAllPatients()) {
+//        print(p.toString());
+//      }
       await Future.delayed(Duration(seconds: 3));
 
       yield DataFetchSuccessState(false);
