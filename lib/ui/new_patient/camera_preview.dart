@@ -11,6 +11,8 @@ class CameraPreview extends StatefulWidget {
 class _CameraPreviewState extends State<CameraPreview> {
   bool isFlashOn;
   bool hasFlashLight;
+  List<String> eyes = [LEFT_EYE, RIGHT_EYE];
+  int eyeSelector;
   double scale;
 
   @override
@@ -18,6 +20,7 @@ class _CameraPreviewState extends State<CameraPreview> {
     super.initState();
     isFlashOn = false;
     scale = 1.0;
+    eyeSelector = 0;
     initLamp();
   }
 
@@ -50,9 +53,9 @@ class _CameraPreviewState extends State<CameraPreview> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Spacer(),
+                _eyeToggleRowWidget(),
                 _captureControlRowWidget(context),
-                _flashTogglesRowWidget(),
+                _flashToggleRowWidget(),
               ],
             ),
             SizedBox(height: 20.0),
@@ -112,7 +115,7 @@ class _CameraPreviewState extends State<CameraPreview> {
     );
   }
 
-  Widget _flashTogglesRowWidget() {
+  Widget _flashToggleRowWidget() {
     return Expanded(
       child: Align(
         alignment: Alignment.centerRight,
@@ -130,6 +133,24 @@ class _CameraPreviewState extends State<CameraPreview> {
           },
           icon: isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
           label: isFlashOn ? Text("On") : Text("Off"),
+        ),
+      ),
+    );
+  }
+
+  Widget _eyeToggleRowWidget() {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: FlatButton.icon(
+          onPressed: () {
+            print("Eye mode switched");
+            setState(() {
+              eyeSelector = (eyeSelector + 1) % 2;
+            });
+          },
+          icon: Icon(Icons.remove_red_eye),
+          label: Text(eyes[eyeSelector]),
         ),
       ),
     );

@@ -6,3 +6,5 @@ const String OLD_PATIENT_BUTTON = " Old Patient ";
 const String NEW_PATIENT_APPBAR = "New Patient";
 const String IMAGE_PREVIEW_APPBAR = "Take Photo";
 const String TAKE_PHOTO_BUTTON = "Take Photo";
+const String LEFT_EYE = "Left Eye";
+const String RIGHT_EYE = "Right Eye";
