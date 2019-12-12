@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:eye_capture/models/patient_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -53,5 +54,17 @@ class DBProvider {
           );
         },
     );
+  }
+
+  Future<int> insertPatient(Patient patient) async {
+    final db = await database;
+    return await db.insert("Patient", patient.toMap());
+  }
+
+  Future<List<Patient>> getAllPatients() async {
+    final db = await database;
+    var res = await db.query("Patient");
+    List<Patient> list = res.isNotEmpty ? res.map((c) => Patient.fromMap(c)).toList() : [];
+    return list;
   }
 }
