@@ -44,4 +44,7 @@ class Image {
     final map = image.toMap();
     return json.encode(map);
   }
+
+  @override
+  String toString() => "Image: id: $id - appointmentId: $appointmentId - imagePath: $imagePath - zoomLevel: $zoomLevel - eyeDescription: $eyeDescription - dateTime: $dateTime";
 }

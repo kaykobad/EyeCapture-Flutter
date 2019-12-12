@@ -32,4 +32,7 @@ class Appointment {
     final map = appointment.toMap();
     return json.encode(map);
   }
+
+  @override
+  String toString() => "Appointment: id: $id - dateTime: $dateTime - patientId: $patientId";
 }

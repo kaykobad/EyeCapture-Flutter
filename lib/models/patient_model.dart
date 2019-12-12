@@ -40,4 +40,7 @@ class Patient {
     final map = patient.toMap();
     return json.encode(map);
   }
+
+  @override
+  String toString() => "Patient: id: $id - patientId: $patientId - patientName: $patientName - age: $age - sex: $sex";
 }
