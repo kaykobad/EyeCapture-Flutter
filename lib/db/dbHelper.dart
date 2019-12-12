@@ -47,8 +47,8 @@ class DBProvider {
               "appointment_id INTEGER,"
               "image_path TEXT,"
               "zoom_level REAL,"
-              "eye_descriptor TEXT,"
-              "capture_time TEXT"
+              "eye_descripton TEXT,"
+              "date_time TEXT"
               ")"
           );
         },

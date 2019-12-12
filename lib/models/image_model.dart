@@ -1,43 +1,47 @@
 import 'dart:convert';
 
-class Patient {
+class Image {
   int id;
-  String patientId;
-  String patientName;
-  double age;
-  String sex;
+  int appointmentId;
+  String imagePath;
+  double zoomLevel;
+  String eyeDescription;
+  String dateTime;
 
-  Patient({
+  Image({
     this.id,
-    this.patientId,
-    this.patientName,
-    this.age,
-    this.sex,
+    this.appointmentId,
+    this.imagePath,
+    this.zoomLevel,
+    this.eyeDescription,
+    this.dateTime,
   });
 
-  factory Patient.fromMap(Map<String, dynamic> json) => Patient(
+  factory Image.fromMap(Map<String, dynamic> json) => Image(
     id: json["id"],
-    patientId: json["patient_id"],
-    patientName: json["patient_name"],
-    age: json["age"],
-    sex: json["sex"],
+    appointmentId: json["appointment_id"],
+    imagePath: json["image_path"],
+    zoomLevel: json["zoom_level"],
+    eyeDescription: json["eye_descripton"],
+    dateTime: json["date_time"],
   );
 
   Map<String, dynamic> toMap() => {
     "id": id,
-    "patient_id": patientId,
-    "patient_name": patientName,
-    "age": age,
-    "sex": sex,
+    "appointment_id": appointmentId,
+    "image_path": imagePath,
+    "zoom_level": zoomLevel,
+    "eye_descripton": eyeDescription,
+    "date_time": dateTime,
   };
 
-  Patient patientFromJson(String str) {
+  Image imageFromJson(String str) {
     final jsonData = json.decode(str);
-    return Patient.fromMap(jsonData);
+    return Image.fromMap(jsonData);
   }
 
-  String patientToJson(Patient patient) {
-    final map = patient.toMap();
+  String imageToJson(Image image) {
+    final map = image.toMap();
     return json.encode(map);
   }
 }
