@@ -3,16 +3,23 @@ import 'dart:io';
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
 import 'package:flutter/material.dart';
 
 class ImagePreviewWithButton extends StatefulWidget {
   final NewPatientBloc newPatientBloc;
   final String imagePath;
+  final String dateTime;
   final String eyeDescription;
   final double zoomLevel;
 
   const ImagePreviewWithButton(
-      {Key key, this.imagePath, this.eyeDescription, this.zoomLevel, this.newPatientBloc})
+      {Key key,
+      this.imagePath,
+      this.dateTime,
+      this.eyeDescription,
+      this.zoomLevel,
+      this.newPatientBloc})
       : super(key: key);
 
   @override
@@ -138,7 +145,16 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         horizontal: BUTTON_PADDING_LEFT,
         vertical: BUTTON_PADDING_TOP,
       ),
-      onPressed: () => debugPrint("Save and continue button pressed"),
+      onPressed: () {
+        debugPrint("Save and continue button pressed");
+        widget.newPatientBloc.add(SaveNewPatientEyeEvent(
+          widget.imagePath,
+          widget.dateTime,
+          widget.zoomLevel,
+          widget.eyeDescription,
+        ));
+        Navigator.of(context).pop();
+      },
     );
   }
 

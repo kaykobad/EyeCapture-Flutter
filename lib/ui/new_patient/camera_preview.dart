@@ -268,12 +268,12 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       debugPrint("$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
       await controller.takePicture(path);
 
-      widget.newPatientBloc.add(SaveNewPatientEyeEvent(path, dateTime, scale, eyes[eyeSelector]));
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ImagePreviewWithButton(
             imagePath: path,
+            dateTime: dateTime,
             eyeDescription: eyes[eyeSelector],
             zoomLevel: scale,
             newPatientBloc: widget.newPatientBloc,
