@@ -1,5 +1,7 @@
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/ui/new_patient/camera_preview.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:intl/intl.dart';
@@ -17,16 +19,20 @@ class _NewPatientFormState extends State<NewPatientForm> {
   TextEditingController _dateTimeController;
   bool _autoValidate;
   String _radioValue;
+  NewPatientBloc _newPatientBloc;
+  String _dateTime;
 
   @override
   void initState() {
     super.initState();
     _formKey = GlobalKey<FormState>();
+    _newPatientBloc = NewPatientBloc();
     _autoValidate = false;
     _radioValue = "Male";
     _patientIdController = TextEditingController();
     _patientNameController = TextEditingController();
     _patientAgeController = TextEditingController();
+    _dateTime = DateTime.now().toString();
     var _currentDateTime = DateFormat.yMd().add_jm().format(DateTime.now());
     _dateTimeController = TextEditingController(text: _currentDateTime);
   }
@@ -34,6 +40,10 @@ class _NewPatientFormState extends State<NewPatientForm> {
   @override
   void dispose() {
     super.dispose();
+    _patientIdController?.dispose();
+    _patientNameController?.dispose();
+    _patientAgeController?.dispose();
+    _dateTimeController?.dispose();
   }
 
   @override
@@ -192,9 +202,15 @@ class _NewPatientFormState extends State<NewPatientForm> {
     if (_formKey.currentState.validate()) {
       String patientId = _patientIdController.text;
       String patientName = _patientNameController.text;
-      int patientAge = int.tryParse(_patientAgeController.text);
+      double patientAge = double.tryParse(_patientAgeController.text);
 
       print("$patientId - $patientName - $patientAge");
+
+      _newPatientBloc.add(SaveNewPatientInfoEvent(patientName, patientId, patientAge, _radioValue, _dateTime));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => LiveCameraPreview(
+                newPatientBloc: _newPatientBloc,
+              )));
     } else {
       setState(() {
         _autoValidate = true;
@@ -221,8 +237,6 @@ class _NewPatientFormState extends State<NewPatientForm> {
       onPressed: () {
         print("Take photo pressed");
         _validateInputs();
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => LiveCameraPreview()));
       },
     );
   }

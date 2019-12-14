@@ -5,22 +5,27 @@ class NewPatientSate extends Equatable {
   List<Object> get props => [];
 }
 
-class InitialStateState extends Equatable {
+class InitialState extends NewPatientSate {
   @override
   List<Object> get props => [];
 }
 
-class PatientSaveSuccessState extends Equatable {
+class PatientSaveSuccessState extends NewPatientSate {
   @override
   List<Object> get props => [];
 }
 
-class PatientSaveFailureState extends Equatable {
+class PatientSaveFailureState extends NewPatientSate {
   @override
   List<Object> get props => [];
 }
 
-class LoadingPatientSaveState extends Equatable {
+class LoadingPatientSaveState extends NewPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class ContinueState extends NewPatientSate {
   @override
   List<Object> get props => [];
 }
