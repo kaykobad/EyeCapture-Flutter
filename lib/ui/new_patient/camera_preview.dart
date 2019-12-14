@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
+import 'package:eye_capture/ui/new_patient/image_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -96,7 +97,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(IMAGE_PREVIEW_APPBAR),
+        title: Text(CAMERA_PREVIEW_APPBAR),
       ),
       body: SafeArea(
         child: Column(
@@ -254,12 +255,16 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       );
       debugPrint(path);
       await controller.takePicture(path);
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(
-//          builder: (context) => PreviewImageScreen(imagePath: path),
-//        ),
-//      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ImagePreviewWithButton(
+            imagePath: path,
+            eyeDescription: eyes[eyeSelector],
+            zoomLevel: scale,
+          ),
+        ),
+      );
     } catch (e) {
       print(e);
     }
