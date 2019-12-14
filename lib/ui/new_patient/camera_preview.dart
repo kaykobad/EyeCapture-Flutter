@@ -1,19 +1,26 @@
+import 'package:camera/camera.dart';
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:torch/torch.dart';
 
-class CameraPreview extends StatefulWidget {
+class LiveCameraPreview extends StatefulWidget {
   @override
-  _CameraPreviewState createState() => _CameraPreviewState();
+  _LiveCameraPreviewState createState() => _LiveCameraPreviewState();
 }
 
-class _CameraPreviewState extends State<CameraPreview> {
+class _LiveCameraPreviewState extends State<LiveCameraPreview> {
   bool isFlashOn;
   bool hasFlashLight;
   List<String> eyes = [LEFT_EYE, RIGHT_EYE];
   int eyeSelector;
   double scale;
+  CameraController controller;
+  List cameras;
+  int selectedCameraIdx;
+  String imagePath;
 
   @override
   void initState() {
@@ -21,12 +28,62 @@ class _CameraPreviewState extends State<CameraPreview> {
     isFlashOn = false;
     scale = 1.0;
     eyeSelector = 0;
-    initLamp();
+    initCamera();
+    //initLamp();
   }
 
   @override
   void dispose() {
     super.dispose();
+    controller?.dispose();
+  }
+
+  initCamera() {
+    availableCameras().then((availableCameras) {
+      cameras = availableCameras;
+      if (cameras.length > 0) {
+        setState(() {
+          selectedCameraIdx = 0;
+        });
+
+        _initCameraController(cameras[selectedCameraIdx]).then((void v) {});
+      } else {
+        print("No camera available");
+      }
+    }).catchError((err) {
+      print('Error: $err.code\nError Message: $err.message');
+    });
+  }
+
+  Future _initCameraController(CameraDescription cameraDescription) async {
+    if (controller != null) {
+      await controller.dispose();
+    }
+
+    controller = CameraController(cameraDescription, ResolutionPreset.high);
+    controller.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+      if (controller.value.hasError) {
+        print('Camera error ${controller.value.errorDescription}');
+      }
+    });
+    try {
+      await controller.initialize();
+    } on CameraException catch (e) {
+      _showCameraException(e);
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _showCameraException(CameraException e) {
+    String errorText = 'Error: ${e.code}\nError Message: ${e.description}';
+    print(errorText);
+
+    print('Error: ${e.code}\n${e.description}');
   }
 
   initLamp() async {
@@ -50,12 +107,12 @@ class _CameraPreviewState extends State<CameraPreview> {
               child: _cameraPreviewWidget(),
             ),
             SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+            SizedBox(height: 20.0),
+            Column(
               children: <Widget>[
-                _eyeToggleRowWidget(),
-                _captureControlRowWidget(context),
-                _flashToggleRowWidget(),
+                _getSliderController(),
+                SizedBox(height: 10.0),
+                _getCaptureImageRow(context),
               ],
             ),
             SizedBox(height: 20.0),
@@ -65,28 +122,39 @@ class _CameraPreviewState extends State<CameraPreview> {
     );
   }
 
-  Widget _cameraPreviewWidget() {
-    return Column(
+  Row _getCaptureImageRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        _getSliderController(),
-        Container(
-          margin: EdgeInsets.all(CAMERA_PADDING),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.blueAccent),
-          ),
-          child: Transform.scale(
-            scale: scale,
-            child: AspectRatio(
-              aspectRatio: 1.0,
-              child: Container(
-                color: Colors.black45,
-              ),
-            ),
-          ),
-        ),
+        _eyeToggleRowWidget(),
+        _captureControlRowWidget(context),
+        //_flashToggleRowWidget(),
+        Spacer(),
       ],
+    );
+  }
+
+  Widget _cameraPreviewWidget() {
+    if (controller == null || !controller.value.isInitialized) {
+      return const Text(
+        'Loading',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w900,
+        ),
+      );
+    }
+
+    return Transform.scale(
+      scale: scale,
+      child: AspectRatio(
+        aspectRatio: controller.value.aspectRatio,
+        child: RotatedBox(
+          quarterTurns: 2,
+          child: CameraPreview(controller),
+        ),
+      ),
     );
   }
 
@@ -179,5 +247,21 @@ class _CameraPreviewState extends State<CameraPreview> {
 
   void _onCapturePressed(context) async {
     print("Capture Button Pressed");
+    try {
+      final path = join(
+        (await getExternalStorageDirectory()).path,
+        '${DateTime.now().toString().replaceAll(" ", "_").substring(0, 19)}.png',
+      );
+      debugPrint(path);
+      await controller.takePicture(path);
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(
+//          builder: (context) => PreviewImageScreen(imagePath: path),
+//        ),
+//      );
+    } catch (e) {
+      print(e);
+    }
   }
 }

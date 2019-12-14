@@ -222,7 +222,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
         print("Take photo pressed");
         _validateInputs();
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => CameraPreview()));
+            .push(MaterialPageRoute(builder: (context) => LiveCameraPreview()));
       },
     );
   }
