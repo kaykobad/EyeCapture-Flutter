@@ -59,6 +59,8 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   Column _getControllerButtons() {
     return Column(
       children: <Widget>[
+        _getSaveAndContinueButton(),
+        SizedBox(height: 10.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -67,8 +69,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
             _getSaveButton(),
           ],
         ),
-        SizedBox(height: 10.0),
-        _getSaveAndContinueButton(),
       ],
     );
   }
@@ -90,7 +90,13 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         horizontal: BUTTON_PADDING_LEFT,
         vertical: BUTTON_PADDING_TOP,
       ),
-      onPressed: () => debugPrint("Discard button pressed"),
+      onPressed: () {
+        debugPrint("Discard button pressed");
+        File f = File(widget.imagePath);
+        var isDeleted = f.delete();
+        debugPrint(isDeleted.toString());
+        Navigator.of(context).pop();
+      },
     );
   }
 
