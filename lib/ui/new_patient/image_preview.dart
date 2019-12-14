@@ -4,6 +4,7 @@ import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
+import 'package:eye_capture/ui/new_patient/report.dart';
 import 'package:flutter/material.dart';
 
 class ImagePreviewWithButton extends StatefulWidget {
@@ -125,7 +126,12 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         horizontal: BUTTON_PADDING_LEFT,
         vertical: BUTTON_PADDING_TOP,
       ),
-      onPressed: () => debugPrint("Discard button pressed"),
+      onPressed: () {
+        debugPrint("Save button pressed");
+        Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => ReportPreview(newPatientBloc: widget.newPatientBloc,),
+        ));
+      },
     );
   }
 

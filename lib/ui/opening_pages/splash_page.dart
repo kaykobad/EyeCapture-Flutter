@@ -38,7 +38,7 @@ class _EyeCaptureSplashScreenState extends State<EyeCaptureSplashScreen> {
         listener: (context, state) {
           if (state is DataFetchSuccessState) {
             // TODO: go to pin page or patient selection page depending on data fetch
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => PatientTypeSelectionPage(),
