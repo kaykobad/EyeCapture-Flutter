@@ -1,8 +1,8 @@
 import 'package:camera/camera.dart';
-import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/new_patient/image_preview.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -92,10 +92,10 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
     print('Error: ${e.code}\n${e.description}');
   }
 
-  initLamp() async {
-    hasFlashLight = await Torch.hasTorch;
-    print("Has lamp: $hasFlashLight");
-  }
+//  initLamp() async {
+//    hasFlashLight = await Torch.hasTorch;
+//    print("Has lamp: $hasFlashLight");
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,18 +112,24 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
               flex: 1,
               child: _cameraPreviewWidget(),
             ),
-            SizedBox(height: 10.0),
-            SizedBox(height: 20.0),
-            Column(
-              children: <Widget>[
-                _getSliderController(),
-                SizedBox(height: 10.0),
-                _getCaptureImageRow(context),
-              ],
-            ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 25.0),
           ],
         ),
+      ),
+      bottomNavigationBar: _getBottomAppBar(context),
+    );
+  }
+
+  BottomAppBar _getBottomAppBar(BuildContext context) {
+    return BottomAppBar(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _getSliderController(),
+          SizedBox(height: 10.0),
+          _getCaptureImageRow(context),
+          SizedBox(height: 20.0),
+        ],
       ),
     );
   }
@@ -254,12 +260,15 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
   void _onCapturePressed(context) async {
     print("Capture Button Pressed");
     try {
+      String dateTime = DateTime.now().toString();
       final path = join(
         (await getExternalStorageDirectory()).path,
-        '${DateTime.now().toString().replaceAll(" ", "_").substring(0, 19)}.png',
+        '${dateTime.replaceAll(" ", "_").substring(0, 19)}.png',
       );
-      debugPrint(path);
+      debugPrint("$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
       await controller.takePicture(path);
+
+      widget.newPatientBloc.add(SaveNewPatientEyeEvent(path, dateTime, scale, eyes[eyeSelector]));
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -267,6 +276,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
             imagePath: path,
             eyeDescription: eyes[eyeSelector],
             zoomLevel: scale,
+            newPatientBloc: widget.newPatientBloc,
           ),
         ),
       );
