@@ -29,3 +29,18 @@ class ContinueState extends NewPatientSate {
   @override
   List<Object> get props => [];
 }
+
+class SavingPatientState extends NewPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class SavingPatientFailedState extends NewPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class SavingPatientSuccessState extends NewPatientSate {
+  @override
+  List<Object> get props => [];
+}

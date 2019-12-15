@@ -4,8 +4,12 @@ import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/models/eye_model.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_state.dart';
+import 'package:eye_capture/ui/opening_pages/patient_selection_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReportPreview extends StatefulWidget {
   final NewPatientBloc newPatientBloc;
@@ -20,6 +24,7 @@ class _ReportPreviewState extends State<ReportPreview> {
   List<String> eyes = [LEFT_EYE, RIGHT_EYE];
   List<Eye> leftEyes = List<Eye>();
   List<Eye> rightEyes = List<Eye>();
+  bool _isSaving;
 
   @override
   void initState() {
@@ -32,31 +37,55 @@ class _ReportPreviewState extends State<ReportPreview> {
       }
     }
 
+    _isSaving = false;
     print("${leftEyes.length}, ${rightEyes.length}");
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.newPatientBloc?.close();
+    //widget.newPatientBloc?.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _getAppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Container(
-            padding: EdgeInsets.all(PAGE_PADDING),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _getPatientDescription(),
-                SizedBox(height: 20.0),
-                _getEyeImages(),
-              ],
+      body: BlocListener(
+        bloc: widget.newPatientBloc,
+        listener: (context, state) {
+          if (state is SavingPatientState) {
+            setState(() {
+              _isSaving = true;
+            });
+          } else if (state is SavingPatientSuccessState) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PatientTypeSelectionPage()),
+                (Route<dynamic> routes) => false);
+          } else if(state is SavingPatientFailedState) {
+            setState(() {
+              _isSaving = false;
+            });
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("Saving failed, please try again"),
+            ));
+          }
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
+              padding: EdgeInsets.all(PAGE_PADDING),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _getPatientDescription(),
+                  SizedBox(height: 20.0),
+                  _getEyeImages(),
+                ],
+              ),
             ),
           ),
         ),
@@ -79,7 +108,7 @@ class _ReportPreviewState extends State<ReportPreview> {
               fontSize: 16.0,
             ),
           ),
-          onPressed: () {},
+          onPressed: () => widget.newPatientBloc.add(SaveNewPatientEvent()),
         ),
       ],
     );
@@ -88,7 +117,7 @@ class _ReportPreviewState extends State<ReportPreview> {
   Container _getEyeImages() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: PAGE_PADDING),
-      child: Column (
+      child: Column(
         children: <Widget>[
           leftEyes.length > 0 ? _leftEyePrompt() : Container(),
           _getLeftEyeImages(),
