@@ -44,11 +44,28 @@ class _AllAppointmentsState extends State<AllAppointments> {
       body: BlocListener(
         bloc: widget.oldPatientBloc,
         listener: (context, state) {
-          if (state is AllAppointmentsGetSuccessState) {
+          if (state is LoadingAllAppointmentsGetState ||
+              state is LoadingDeleteAppointmentState) {
+            setState(() {
+              _isLoadingData = true;
+            });
+          } else if (state is AllAppointmentsGetSuccessState) {
             setState(() {
               allAppointments = state.allAppointments;
               _isLoadingData = false;
             });
+          } else if (state is DeleteAppointmentSuccessState) {
+            setState(() {
+              _isLoadingData = false;
+            });
+            widget.oldPatientBloc.add(GetAllAppointmentsEvent(widget.patient));
+          } else if (state is DeleteAppointmentFailureState) {
+            setState(() {
+              _isLoadingData = false;
+            });
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("Could not delete appointment. Please try again."),
+            ));
           } else if (state is AllImagesGetSuccessState) {
             setState(() {
               _isLoadingData = false;
@@ -104,7 +121,7 @@ class _AllAppointmentsState extends State<AllAppointments> {
             trailing: IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {
-                _showDialog();
+                _showDialog(allAppointments[idx]);
               },
             ),
             onTap: () {
@@ -118,7 +135,7 @@ class _AllAppointmentsState extends State<AllAppointments> {
     );
   }
 
-  void _showDialog() {
+  void _showDialog(Appointment appointment) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -134,6 +151,7 @@ class _AllAppointmentsState extends State<AllAppointments> {
                 ),
               ),
               onPressed: () {
+                widget.oldPatientBloc.add(DeleteAppointmentEvent(appointment));
                 Navigator.of(context).pop();
               },
             ),

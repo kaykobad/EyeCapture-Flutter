@@ -30,3 +30,12 @@ class GetAllImagesEvent extends OldPatientEvent {
   @override
   List<Object> get props => [appointment];
 }
+
+class DeleteAppointmentEvent extends OldPatientEvent {
+  final Appointment appointment;
+
+  DeleteAppointmentEvent(this.appointment);
+
+  @override
+  List<Object> get props => [appointment];
+}
