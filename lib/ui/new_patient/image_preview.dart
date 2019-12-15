@@ -43,10 +43,10 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
             children: <Widget>[
               _getEyeDescription(),
               SizedBox(height: 10.0),
-              Expanded(
+              Center(
                 child: _imagePreview(),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 25.0),
               _getControllerButtons(),
             ],
           ),
@@ -69,8 +69,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   Column _getControllerButtons() {
     return Column(
       children: <Widget>[
-        _getSaveAndContinueButton(),
-        SizedBox(height: 10.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -79,6 +77,8 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
             _getSaveButton(),
           ],
         ),
+        SizedBox(height: 10.0),
+        _getSaveAndContinueButton(),
       ],
     );
   }
@@ -174,11 +174,8 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
     return RotatedBox(
       quarterTurns: 2,
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.red,
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.blueAccent),
-        ),
+        height: 300,
+        width: 300,
         child: Image.file(
           File(widget.imagePath),
           fit: BoxFit.cover,

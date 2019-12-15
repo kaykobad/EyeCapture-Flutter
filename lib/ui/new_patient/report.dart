@@ -68,6 +68,7 @@ class _ReportPreviewState extends State<ReportPreview> {
     return AppBar(
       centerTitle: true,
       title: Text(REPORT_APPBAR),
+      automaticallyImplyLeading: false,
       actions: <Widget>[
         FlatButton.icon(
           textColor: Colors.white,
@@ -145,13 +146,16 @@ class _ReportPreviewState extends State<ReportPreview> {
         shrinkWrap: true,
         itemCount: leftEyes.length,
         itemBuilder: (BuildContext context, int idx) {
-          return Container(
-            margin: EdgeInsets.all(PAGE_PADDING),
-            height: 250,
-            width: 250,
-            child: Image.file(
-              File(leftEyes[idx].imagePath),
-              fit: BoxFit.cover,
+          return RotatedBox(
+            quarterTurns: 2,
+            child: Container(
+              margin: EdgeInsets.all(PAGE_PADDING),
+              height: 250,
+              width: 250,
+              child: Image.file(
+                File(leftEyes[idx].imagePath),
+                fit: BoxFit.cover,
+              ),
             ),
           );
         },
@@ -178,13 +182,16 @@ class _ReportPreviewState extends State<ReportPreview> {
         shrinkWrap: true,
         itemCount: rightEyes.length,
         itemBuilder: (BuildContext context, int idx) {
-          return Container(
-            height: 250,
-            width: 250,
-            margin: EdgeInsets.all(PAGE_PADDING),
-            child: Image.file(
-              File(rightEyes[idx].imagePath),
-              fit: BoxFit.cover,
+          return RotatedBox(
+            quarterTurns: 2,
+            child: Container(
+              height: 250,
+              width: 250,
+              margin: EdgeInsets.all(PAGE_PADDING),
+              child: Image.file(
+                File(rightEyes[idx].imagePath),
+                fit: BoxFit.cover,
+              ),
             ),
           );
         },
