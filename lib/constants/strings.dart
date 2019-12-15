@@ -15,3 +15,6 @@ const String SAVE_AND_TAKE_ANOTHER = "Save and Take Another Photo";
 const String REPORT_APPBAR = "Report";
 const String SAVE_DATA = "Save";
 const String OLD_PATIENT_APPBAR = "All Patients";
+const String DELETE_PATIENT_DIALOG_HEADER = "Delete Patient?";
+const String DELETE_PATIENT_DIALOG_MESSAGE = "Are you sure you want to delete this patient? All his data will be deleted.";
+

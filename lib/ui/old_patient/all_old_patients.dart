@@ -36,7 +36,7 @@ class _AllOldPatientsState extends State<AllOldPatients> {
       body: BlocListener(
         bloc: _oldPatientBloc,
         listener: (context, state) {
-          if(state is AllPatientsGetSuccessState) {
+          if (state is AllPatientsGetSuccessState) {
             setState(() {
               allPatients = state.allPatients;
               _isLoadingData = false;
@@ -58,19 +58,58 @@ class _AllOldPatientsState extends State<AllOldPatients> {
     );
   }
 
-  _getAllPatients() {
+  Widget _getAllPatients() {
     return ListView.builder(
       itemCount: allPatients.length,
       itemBuilder: (context, idx) {
         return Card(
           child: ListTile(
             title: Text("${allPatients[idx].patientName}"),
-            subtitle: Text("Sex: ${allPatients[idx].sex} - Age: ${allPatients[idx].age}"),
+            subtitle: Text(
+                "Sex: ${allPatients[idx].sex} - Age: ${allPatients[idx].age}"),
             trailing: IconButton(
               icon: Icon(Icons.delete),
-              onPressed: (){},
+              onPressed: () {
+                _showDialog();
+              },
             ),
           ),
+        );
+      },
+    );
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(DELETE_PATIENT_DIALOG_HEADER),
+          content: Text(DELETE_PATIENT_DIALOG_MESSAGE),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "Yes",
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                "No",
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       },
     );
