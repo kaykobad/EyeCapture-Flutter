@@ -2,19 +2,30 @@ import 'dart:io';
 
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
+import 'package:eye_capture/models/appointment_model.dart';
 import 'package:eye_capture/models/eye_model.dart';
-import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
+import 'package:eye_capture/models/patient_model.dart';
+import 'package:eye_capture/models/image_model.dart' as image;
 import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_state.dart';
+import 'package:eye_capture/ui/old_patient/old_patient_bloc.dart';
 import 'package:eye_capture/ui/opening_pages/patient_selection_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ViewReport extends StatefulWidget {
   final OldPatientBloc oldPatientBloc;
+  final Patient patient;
+  final Appointment appointment;
+  final List<image.Image> images;
 
-  const ViewReport({Key key, this.newPatientBloc}) : super(key: key);
+  const ViewReport(
+      {Key key,
+      this.oldPatientBloc,
+      this.patient,
+      this.appointment,
+      this.images})
+      : super(key: key);
 
   @override
   _ViewReportState createState() => _ViewReportState();
@@ -22,14 +33,13 @@ class ViewReport extends StatefulWidget {
 
 class _ViewReportState extends State<ViewReport> {
   List<String> eyes = [LEFT_EYE, RIGHT_EYE];
-  List<Eye> leftEyes = List<Eye>();
-  List<Eye> rightEyes = List<Eye>();
-  bool _isSaving;
+  List<image.Image> leftEyes = List<image.Image>();
+  List<image.Image> rightEyes = List<image.Image>();
 
   @override
   void initState() {
     super.initState();
-    for (Eye e in widget.newPatientBloc.eyes) {
+    for (image.Image e in widget.images) {
       if (e.eyeDescription == eyes[0]) {
         leftEyes.add(e);
       } else {
@@ -37,7 +47,6 @@ class _ViewReportState extends State<ViewReport> {
       }
     }
 
-    _isSaving = false;
     print("${leftEyes.length}, ${rightEyes.length}");
   }
 
@@ -52,27 +61,8 @@ class _ViewReportState extends State<ViewReport> {
     return Scaffold(
       appBar: _getAppBar(),
       body: BlocListener(
-        bloc: widget.newPatientBloc,
-        listener: (context, state) {
-          if (state is SavingPatientState) {
-            setState(() {
-              _isSaving = true;
-            });
-          } else if (state is SavingPatientSuccessState) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PatientTypeSelectionPage()),
-                    (Route<dynamic> routes) => false);
-          } else if(state is SavingPatientFailedState) {
-            setState(() {
-              _isSaving = false;
-            });
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text("Saving failed, please try again"),
-            ));
-          }
-        },
+        bloc: widget.oldPatientBloc,
+        listener: (context, state) {},
         child: SafeArea(
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -97,18 +87,25 @@ class _ViewReportState extends State<ViewReport> {
     return AppBar(
       centerTitle: true,
       title: Text(REPORT_APPBAR),
-      automaticallyImplyLeading: false,
       actions: <Widget>[
         FlatButton.icon(
           textColor: Colors.white,
-          icon: Icon(Icons.save),
+          icon: Icon(Icons.home),
           label: Text(
-            SAVE_DATA,
+            HOME,
             style: TextStyle(
               fontSize: 16.0,
             ),
           ),
-          onPressed: () => widget.newPatientBloc.add(SaveNewPatientEvent()),
+          onPressed: () {
+            widget.oldPatientBloc?.close();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PatientTypeSelectionPage()),
+              (Route<dynamic> routes) => false,
+            );
+          },
         ),
       ],
     );
@@ -132,7 +129,7 @@ class _ViewReportState extends State<ViewReport> {
     return Column(
       children: <Widget>[
         Text(
-          "Name: ${widget.newPatientBloc.patientName}",
+          "Name: ${widget.patient.patientName}",
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
@@ -145,19 +142,19 @@ class _ViewReportState extends State<ViewReport> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              "Age: ${widget.newPatientBloc.age} years",
+              "Age: ${widget.patient.age} years",
               style: TextStyle(
                 fontSize: REGULAR_FONT_SIZE,
               ),
             ),
             Text(
-              "Sex: ${widget.newPatientBloc.sex}",
+              "Sex: ${widget.patient.sex}",
               style: TextStyle(
                 fontSize: REGULAR_FONT_SIZE,
               ),
             ),
             Text(
-              "Date: ${widget.newPatientBloc.dateTime.substring(0, 10)}",
+              "Date: ${widget.appointment.dateTime.substring(0, 10)}",
               style: TextStyle(
                 fontSize: REGULAR_FONT_SIZE,
               ),

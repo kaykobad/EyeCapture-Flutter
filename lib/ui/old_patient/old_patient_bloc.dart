@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:eye_capture/db/dbHelper.dart';
 import 'package:eye_capture/models/appointment_model.dart';
 import 'package:eye_capture/models/patient_model.dart';
+import 'package:eye_capture/models/image_model.dart' as image;
 import 'package:eye_capture/ui/old_patient/old_patient_state.dart';
 import 'package:eye_capture/ui/old_patient/old_patients_event.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 class OldPatientBloc extends Bloc<OldPatientEvent, OldPatientSate> {
   Patient patient;
   Appointment appointment;
-  List<Image> images = List<Image>();
+  List<image.Image> images;
 
   @override
   OldPatientSate get initialState => InitialState();
@@ -44,6 +45,22 @@ class OldPatientBloc extends Bloc<OldPatientEvent, OldPatientSate> {
       } on Exception catch (e) {
         debugPrint("Appointments fetch failure!");
         yield AllAppointmentsGetFailureState();
+      }
+    }
+
+    else if(event is GetAllImagesEvent) {
+      try {
+        yield LoadingAllImagesGetState();
+        debugPrint("Fetching all images for appointment id: ${event.appointment.id}...");
+
+        appointment = event.appointment;
+        images = await DBProvider.db.getAllImagesByAppointmentId(appointment.id);
+
+        debugPrint("Images fetch success!");
+        yield AllImagesGetSuccessState(images);
+      } on Exception catch (e) {
+        debugPrint("Images fetch failure!");
+        yield AllImagesGetFailureState();
       }
     }
   }

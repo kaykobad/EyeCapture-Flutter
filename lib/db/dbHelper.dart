@@ -121,7 +121,7 @@ class DBProvider {
   Future<List<Image>> getAllImagesByAppointmentId(int appointmentId) async {
     final db = await database;
     var res = await db.query("Image", where: "appointment_id = ?", whereArgs: [appointmentId]);
-    List<Image> list = res.isNotEmpty ? res.map((c) => Appointment.fromMap(c)).toList() : [];
+    List<Image> list = res.isNotEmpty ? res.map((c) => Image.fromMap(c)).toList() : [];
     return list;
   }
 }

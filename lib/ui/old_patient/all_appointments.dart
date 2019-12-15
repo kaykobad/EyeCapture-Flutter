@@ -5,6 +5,7 @@ import 'package:eye_capture/models/patient_model.dart';
 import 'package:eye_capture/ui/old_patient/old_patient_bloc.dart';
 import 'package:eye_capture/ui/old_patient/old_patient_state.dart';
 import 'package:eye_capture/ui/old_patient/old_patients_event.dart';
+import 'package:eye_capture/ui/old_patient/view_report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,8 +13,9 @@ class AllAppointments extends StatefulWidget {
   final OldPatientBloc oldPatientBloc;
   final Patient patient;
 
-  const AllAppointments({Key key, this.oldPatientBloc, this.patient}) : super(key: key);
-  
+  const AllAppointments({Key key, this.oldPatientBloc, this.patient})
+      : super(key: key);
+
   @override
   _AllAppointmentsState createState() => _AllAppointmentsState();
 }
@@ -21,6 +23,7 @@ class AllAppointments extends StatefulWidget {
 class _AllAppointmentsState extends State<AllAppointments> {
   bool _isLoadingData;
   List<Appointment> allAppointments;
+  int _selectedAppointment;
 
   @override
   void initState() {
@@ -45,19 +48,34 @@ class _AllAppointmentsState extends State<AllAppointments> {
               allAppointments = state.allAppointments;
               _isLoadingData = false;
             });
+          } else if (state is AllImagesGetSuccessState) {
+            setState(() {
+              _isLoadingData = false;
+            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ViewReport(
+                  oldPatientBloc: widget.oldPatientBloc,
+                  patient: widget.patient,
+                  appointment: allAppointments[_selectedAppointment],
+                  images: state.images,
+                ),
+              ),
+            );
           }
         },
         child: _isLoadingData
             ? Center(
-          child: CircularProgressIndicator(
-            strokeWidth: 6.0,
-            semanticsLabel: "Loading appointment data...",
-          ),
-        )
+                child: CircularProgressIndicator(
+                  strokeWidth: 6.0,
+                  semanticsLabel: "Loading appointment data...",
+                ),
+              )
             : Container(
-          padding: EdgeInsets.all(PAGE_PADDING),
-          child: _getAllAppointments(),
-        ),
+                padding: EdgeInsets.all(PAGE_PADDING),
+                child: _getAllAppointments(),
+              ),
       ),
     );
   }
@@ -79,7 +97,7 @@ class _AllAppointmentsState extends State<AllAppointments> {
       itemBuilder: (context, idx) {
         return Card(
           child: ListTile(
-            title: Text("Appointment: ${idx+1}"),
+            title: Text("Appointment: ${idx + 1}"),
             subtitle: Text(
                 "Date: ${allAppointments[idx].dateTime.substring(0, 10)} - Time: ${allAppointments[idx].dateTime.substring(11, 19)}"),
             trailing: IconButton(
@@ -88,6 +106,11 @@ class _AllAppointmentsState extends State<AllAppointments> {
                 _showDialog();
               },
             ),
+            onTap: () {
+              _selectedAppointment = idx;
+              widget.oldPatientBloc
+                  .add(GetAllImagesEvent(allAppointments[idx]));
+            },
           ),
         );
       },
