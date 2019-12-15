@@ -38,11 +38,28 @@ class _AllOldPatientsState extends State<AllOldPatients> {
       body: BlocListener(
         bloc: _oldPatientBloc,
         listener: (context, state) {
-          if (state is AllPatientsGetSuccessState) {
+          if (state is LoadingAllPatientGetState ||
+              state is LoadingDeletePatientState) {
+            setState(() {
+              _isLoadingData = true;
+            });
+          } else if (state is AllPatientsGetSuccessState) {
             setState(() {
               allPatients = state.allPatients;
               _isLoadingData = false;
             });
+          } else if (state is DeletePatientFailureState) {
+            setState(() {
+              _isLoadingData = false;
+            });
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Could not delete patient. Please try again."),
+            ));
+          } else if (state is DeletePatientSuccessState) {
+            setState(() {
+              _isLoadingData = false;
+            });
+            _oldPatientBloc.add(GetAllOldPatientsEvent());
           }
         },
         child: _isLoadingData
@@ -83,7 +100,7 @@ class _AllOldPatientsState extends State<AllOldPatients> {
             trailing: IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {
-                _showDialog();
+                _showDialog(allPatients[idx]);
               },
             ),
             onTap: () => Navigator.push(
@@ -101,7 +118,7 @@ class _AllOldPatientsState extends State<AllOldPatients> {
     );
   }
 
-  void _showDialog() {
+  void _showDialog(Patient patient) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -117,6 +134,7 @@ class _AllOldPatientsState extends State<AllOldPatients> {
                 ),
               ),
               onPressed: () {
+                _oldPatientBloc.add(DeletePatientEvent(patient));
                 Navigator.of(context).pop();
               },
             ),

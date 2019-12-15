@@ -84,3 +84,18 @@ class LoadingDeleteAppointmentState extends OldPatientSate {
   @override
   List<Object> get props => [];
 }
+
+class DeletePatientSuccessState extends OldPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class DeletePatientFailureState extends OldPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class LoadingDeletePatientState extends OldPatientSate {
+  @override
+  List<Object> get props => [];
+}

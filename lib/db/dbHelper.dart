@@ -124,4 +124,13 @@ class DBProvider {
     List<Image> list = res.isNotEmpty ? res.map((c) => Image.fromMap(c)).toList() : [];
     return list;
   }
+
+  Future<int> deletePatientData(int patientId) async {
+    List<Appointment> appointments = await getAllAppointmentsByPatientId(patientId);
+    for(Appointment a in appointments) {
+      await deleteImagesByAppointmentId(a.id);
+      await deleteAppointmentById(a.id);
+    }
+    return await deletePatientById(patientId);
+  }
 }

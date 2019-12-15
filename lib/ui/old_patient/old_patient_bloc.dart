@@ -79,6 +79,21 @@ class OldPatientBloc extends Bloc<OldPatientEvent, OldPatientSate> {
         yield DeleteAppointmentFailureState();
       }
     }
+
+    else if(event is DeletePatientEvent) {
+      try {
+        yield LoadingDeletePatientState();
+        debugPrint("Deleting patient id: ${event.patient.id}...");
+
+        int deletedPatient = await DBProvider.db.deletePatientData(event.patient.id);
+
+        debugPrint("Patient delete success! Total deletion: $deletedPatient");
+        yield DeletePatientSuccessState();
+      } on Exception catch (e) {
+        debugPrint("Images fetch failure!");
+        yield DeletePatientFailureState();
+      }
+    }
   }
 
 }
