@@ -36,6 +36,7 @@ class _AllAppointmentsState extends State<AllAppointments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "${widget.patient.patientName}",
         ),

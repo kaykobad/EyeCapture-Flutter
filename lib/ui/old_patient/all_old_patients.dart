@@ -30,6 +30,7 @@ class _AllOldPatientsState extends State<AllOldPatients> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           OLD_PATIENT_APPBAR,
         ),
