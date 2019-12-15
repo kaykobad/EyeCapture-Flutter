@@ -14,3 +14,4 @@ const String DISCARD_BUTTON = "  Retake Photo  ";
 const String SAVE_AND_TAKE_ANOTHER = "Save and Take Another Photo";
 const String REPORT_APPBAR = "Report";
 const String SAVE_DATA = "Save";
+const String OLD_PATIENT_APPBAR = "All Patients";

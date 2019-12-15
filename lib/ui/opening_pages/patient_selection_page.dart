@@ -1,6 +1,7 @@
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_form.dart';
+import 'package:eye_capture/ui/old_patient/all_old_patients.dart';
 import 'package:flutter/material.dart';
 
 class PatientTypeSelectionPage extends StatefulWidget {
@@ -83,7 +84,8 @@ class _PatientTypeSelectionPageState extends State<PatientTypeSelectionPage> {
         horizontal: BUTTON_PADDING_LEFT,
         vertical: BUTTON_PADDING_TOP,
       ),
-      onPressed: () => print("Old patient pressed"),
+      onPressed: (() => Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => AllOldPatients()))),
     );
   }
 }
