@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:eye_capture/models/appointment_model.dart';
 import 'package:eye_capture/models/patient_model.dart';
 
 class OldPatientSate extends Equatable {
@@ -17,7 +18,7 @@ class AllPatientsGetSuccessState extends OldPatientSate {
   AllPatientsGetSuccessState(this.allPatients);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [allPatients];
 }
 
 class AllPatientsGetFailureState extends OldPatientSate {
@@ -26,6 +27,25 @@ class AllPatientsGetFailureState extends OldPatientSate {
 }
 
 class LoadingAllPatientGetState extends OldPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class AllAppointmentsGetSuccessState extends OldPatientSate {
+  final List<Appointment> allAppointments;
+
+  AllAppointmentsGetSuccessState(this.allAppointments);
+
+  @override
+  List<Object> get props => [allAppointments];
+}
+
+class AllAppointmentsGetFailureState extends OldPatientSate {
+  @override
+  List<Object> get props => [];
+}
+
+class LoadingAllAppointmentsGetState extends OldPatientSate {
   @override
   List<Object> get props => [];
 }
