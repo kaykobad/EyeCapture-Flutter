@@ -128,6 +128,12 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
       ),
       onPressed: () {
         debugPrint("Save button pressed");
+        widget.newPatientBloc.add(SaveNewPatientEyeEvent(
+          widget.imagePath,
+          widget.dateTime,
+          widget.zoomLevel,
+          widget.eyeDescription,
+        ));
         Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) => ReportPreview(newPatientBloc: widget.newPatientBloc,),
         ));
