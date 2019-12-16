@@ -69,10 +69,9 @@ class OldPatientBloc extends Bloc<OldPatientEvent, OldPatientSate> {
         yield LoadingDeleteAppointmentState();
         debugPrint("Deleting appointment id: ${event.appointment.id}...");
 
-        int numImageDeleted = await DBProvider.db.deleteImagesByAppointmentId(event.appointment.id);
-        int numAppointmentDeleted = await DBProvider.db.deleteAppointmentById(event.appointment.id);
+        int num = await DBProvider.db.deleteAppointmentData(event.appointment.id);
 
-        debugPrint("Appointment delete success! Total img: $numImageDeleted, total appointment: $numAppointmentDeleted");
+        debugPrint("Appointment delete success! Response: $num");
         yield DeleteAppointmentSuccessState();
       } on Exception catch (e) {
         debugPrint("Images fetch failure!");

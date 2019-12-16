@@ -128,9 +128,20 @@ class DBProvider {
   Future<int> deletePatientData(int patientId) async {
     List<Appointment> appointments = await getAllAppointmentsByPatientId(patientId);
     for(Appointment a in appointments) {
-      await deleteImagesByAppointmentId(a.id);
+      await deleteAppointmentData(a.id);
       await deleteAppointmentById(a.id);
     }
     return await deletePatientById(patientId);
+  }
+
+  Future<int> deleteAppointmentData(int appointmentId) async {
+    List<Image> images = await getAllImagesByAppointmentId(appointmentId);
+    for(Image e in images) {
+      String imagePath = e.imagePath;
+      File f = File(imagePath);
+      await f.delete();
+    }
+    await deleteImagesByAppointmentId(appointmentId);
+    return await deleteAppointmentById(appointmentId);
   }
 }
