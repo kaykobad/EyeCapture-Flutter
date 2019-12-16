@@ -25,6 +25,7 @@ class _ReportPreviewState extends State<ReportPreview> {
   List<Eye> leftEyes = List<Eye>();
   List<Eye> rightEyes = List<Eye>();
   bool _isSaving;
+  double width;
 
   @override
   void initState() {
@@ -49,6 +50,8 @@ class _ReportPreviewState extends State<ReportPreview> {
 
   @override
   Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width - (PAGE_PADDING*4);
+
     return Scaffold(
       appBar: _getAppBar(),
       body: BlocListener(
@@ -121,9 +124,13 @@ class _ReportPreviewState extends State<ReportPreview> {
       child: Column(
         children: <Widget>[
           leftEyes.length > 0 ? _leftEyePrompt() : Container(),
+          SizedBox(height: 15.0),
           _getLeftEyeImages(),
+          SizedBox(height: 15.0),
           rightEyes.length > 0 ? _rightEyePrompt() : Container(),
+          SizedBox(height: 15.0),
           _getRightEyeImages(),
+          SizedBox(height: 15.0),
         ],
       ),
     );
@@ -176,17 +183,25 @@ class _ReportPreviewState extends State<ReportPreview> {
         shrinkWrap: true,
         itemCount: leftEyes.length,
         itemBuilder: (BuildContext context, int idx) {
-          return RotatedBox(
-            quarterTurns: 2,
-            child: Container(
-              margin: EdgeInsets.all(PAGE_PADDING),
-              height: 250,
-              width: 250,
-              child: Image.file(
-                File(leftEyes[idx].imagePath),
-                fit: BoxFit.cover,
+          return Column(
+            children: <Widget>[
+              RotatedBox(
+                quarterTurns: 2,
+                child: Container(
+                  //margin: EdgeInsets.all(PAGE_PADDING),
+                  height: width,
+                  width: width,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: FileImage(File(leftEyes[idx].imagePath)),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              SizedBox(height: 10.0),
+            ],
           );
         },
       );
@@ -212,17 +227,25 @@ class _ReportPreviewState extends State<ReportPreview> {
         shrinkWrap: true,
         itemCount: rightEyes.length,
         itemBuilder: (BuildContext context, int idx) {
-          return RotatedBox(
-            quarterTurns: 2,
-            child: Container(
-              height: 250,
-              width: 250,
-              margin: EdgeInsets.all(PAGE_PADDING),
-              child: Image.file(
-                File(rightEyes[idx].imagePath),
-                fit: BoxFit.cover,
+          return Column(
+            children: <Widget>[
+              RotatedBox(
+                quarterTurns: 2,
+                child: Container(
+                  height: width,
+                  width: width,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: FileImage(File(rightEyes[idx].imagePath)),
+                    ),
+                  ),
+                  //margin: EdgeInsets.all(PAGE_PADDING),
+                ),
               ),
-            ),
+              SizedBox(height: 10.0),
+            ],
           );
         },
       );

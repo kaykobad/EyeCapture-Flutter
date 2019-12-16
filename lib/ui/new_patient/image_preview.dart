@@ -28,8 +28,12 @@ class ImagePreviewWithButton extends StatefulWidget {
 }
 
 class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
+  double width;
+
   @override
   Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width - (PAGE_PADDING*2);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -174,11 +178,14 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
     return RotatedBox(
       quarterTurns: 2,
       child: Container(
-        height: 300,
-        width: 300,
-        child: Image.file(
-          File(widget.imagePath),
-          fit: BoxFit.cover,
+        height: width,
+        width: width,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: FileImage(File(widget.imagePath)),
+          ),
         ),
       ),
     );

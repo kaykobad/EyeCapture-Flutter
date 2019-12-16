@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/new_patient/image_preview.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
@@ -158,11 +159,23 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
 
     return Transform.scale(
       scale: scale,
-      child: AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: RotatedBox(
-          quarterTurns: 2,
-          child: CameraPreview(controller),
+      child: RotatedBox(
+        quarterTurns: 2,
+        child: Stack(
+          children: <Widget>[
+            CameraPreview(controller),
+            Container(
+              margin: EdgeInsets.all(PAGE_PADDING),
+              decoration: new BoxDecoration(
+                color: Colors.transparent,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 3.0,
+                  color: Colors.blueGrey,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -255,7 +268,8 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
         (await getExternalStorageDirectory()).path,
         '${dateTime.replaceAll(" ", "_").substring(0, 19)}.png',
       );
-      debugPrint("$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
+      debugPrint(
+          "$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
       await controller.takePicture(path);
 
       Navigator.push(
