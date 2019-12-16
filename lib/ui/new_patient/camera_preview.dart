@@ -5,7 +5,6 @@ import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:torch/torch.dart';
 
 class LiveCameraPreview extends StatefulWidget {
   final NewPatientBloc newPatientBloc;
@@ -201,14 +200,6 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
         child: FlatButton.icon(
           onPressed: () {
             print("Flash mode switched");
-            setState(() {
-              isFlashOn = !isFlashOn;
-            });
-            if (hasFlashLight && isFlashOn) {
-              Torch.turnOn();
-            } else {
-              Torch.turnOff();
-            }
           },
           icon: isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
           label: isFlashOn ? Text("On") : Text("Off"),
