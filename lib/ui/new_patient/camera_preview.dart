@@ -157,27 +157,27 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       );
     }
 
-    return Transform.scale(
-      scale: scale,
-      child: RotatedBox(
-        quarterTurns: 2,
-        child: Stack(
-          children: <Widget>[
-            CameraPreview(controller),
-            Container(
-              margin: EdgeInsets.all(PAGE_PADDING),
-              decoration: new BoxDecoration(
-                color: Colors.transparent,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 3.0,
-                  color: Colors.blueGrey,
-                ),
-              ),
-            ),
-          ],
+    return Stack(
+      children: <Widget>[
+        Transform.scale(
+          scale: scale,
+          child: RotatedBox(
+            quarterTurns: 2,
+            child: CameraPreview(controller),
+          ),
         ),
-      ),
+        Container(
+          margin: EdgeInsets.all(PAGE_PADDING),
+          decoration: new BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(
+              width: 3.0,
+              color: Colors.blueGrey,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
