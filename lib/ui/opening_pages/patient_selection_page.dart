@@ -3,10 +3,12 @@ import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_form.dart';
 import 'package:eye_capture/ui/old_patient/all_old_patients.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PatientTypeSelectionPage extends StatefulWidget {
   @override
-  _PatientTypeSelectionPageState createState() => _PatientTypeSelectionPageState();
+  _PatientTypeSelectionPageState createState() =>
+      _PatientTypeSelectionPageState();
 }
 
 class _PatientTypeSelectionPageState extends State<PatientTypeSelectionPage> {
@@ -14,16 +16,19 @@ class _PatientTypeSelectionPageState extends State<PatientTypeSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _getAppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _getPatientSelectionPrompt(),
-            SizedBox(height: 15.0),
-            _getOldPatientButton(),
-            SizedBox(height: 10.0),
-            _getNewPatientButton(),
-          ],
+      body: WillPopScope(
+        onWillPop: _closeAppDialog,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _getPatientSelectionPrompt(),
+              SizedBox(height: 15.0),
+              _getOldPatientButton(),
+              SizedBox(height: 10.0),
+              _getNewPatientButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -85,7 +90,44 @@ class _PatientTypeSelectionPageState extends State<PatientTypeSelectionPage> {
         vertical: BUTTON_PADDING_TOP,
       ),
       onPressed: (() => Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => AllOldPatients()))),
+          .push(MaterialPageRoute(builder: (context) => AllOldPatients()))),
+    );
+  }
+
+  Future<bool> _closeAppDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Exit Application?'),
+          content: Text('Do you really want to exit the application?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'No',
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'Yes',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
