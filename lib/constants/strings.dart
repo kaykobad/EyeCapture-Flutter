@@ -20,4 +20,6 @@ const String DELETE_PATIENT_DIALOG_MESSAGE = "Are you sure you want to delete th
 const String DELETE_APPOINTMENT_DIALOG_HEADER= "Delete Appointment?";
 const String DELETE_APPOINTMENT_DIALOG_MESSAGE = "Are you sure you want to delete this appointment? All data will be deleted.";
 const String HOME = "Home";
+const String PIN_INPUT_PROMPT = "Enter Application Pin";
+const String SUBMIT_BUTTON = "Submit";
 

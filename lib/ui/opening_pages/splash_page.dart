@@ -1,6 +1,7 @@
 import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/opening_pages/patient_selection_page.dart';
+import 'package:eye_capture/ui/opening_pages/pin_input_page.dart';
 import 'package:eye_capture/ui/opening_pages/splash_bloc.dart';
 import 'package:eye_capture/ui/opening_pages/splash_event.dart';
 import 'package:eye_capture/ui/opening_pages/splash_state.dart';
@@ -41,7 +42,7 @@ class _EyeCaptureSplashScreenState extends State<EyeCaptureSplashScreen> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PatientTypeSelectionPage(),
+                  builder: (context) => PinInputPage(),
                 ));
           } else if (state is DataFetchFailureState) {
             print("Something went wrong");
