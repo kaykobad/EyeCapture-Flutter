@@ -2,6 +2,8 @@ import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/models/appointment_model.dart';
 import 'package:eye_capture/models/patient_model.dart';
+import 'package:eye_capture/ui/new_patient/camera_preview.dart';
+import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
 import 'package:eye_capture/ui/old_patient/old_patient_bloc.dart';
 import 'package:eye_capture/ui/old_patient/old_patient_state.dart';
 import 'package:eye_capture/ui/old_patient/old_patients_event.dart';
@@ -94,6 +96,30 @@ class _AllAppointmentsState extends State<AllAppointments> {
                 padding: EdgeInsets.all(PAGE_PADDING),
                 child: _getAllAppointments(),
               ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+          size: 32.0,
+        ),
+        onPressed: () {
+          NewPatientBloc _newPatientBloc = NewPatientBloc();
+          _newPatientBloc.isOldPatient = true;
+          _newPatientBloc.oldPatientId = widget.patient.id;
+          _newPatientBloc.patientId = widget.patient.patientId;
+          _newPatientBloc.patientName = widget.patient.patientName;
+          _newPatientBloc.age = widget.patient.age;
+          _newPatientBloc.sex = widget.patient.sex;
+          _newPatientBloc.dateTime = DateTime.now().toString();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LiveCameraPreview(
+                newPatientBloc: _newPatientBloc,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -59,6 +59,7 @@ class _ReportPreviewState extends State<ReportPreview> {
               _isSaving = true;
             });
           } else if (state is SavingPatientSuccessState) {
+            widget.newPatientBloc?.close();
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

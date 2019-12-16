@@ -15,6 +15,8 @@ class NewPatientBloc extends Bloc<NewPatientEvent, NewPatientSate> {
   double age;
   String dateTime;
   List<Eye> eyes = List<Eye>();
+  bool isOldPatient = false;
+  int oldPatientId = -1;
 
   @override
   NewPatientSate get initialState => InitialState();
@@ -47,10 +49,15 @@ class NewPatientBloc extends Bloc<NewPatientEvent, NewPatientSate> {
       try {
         yield SavingPatientState();
 
-        debugPrint("Saving patient...");
-        Patient patient = Patient(patientId: patientId, patientName: patientName, age: age, sex: sex);
-        int pId = await DBProvider.db.insertPatient(patient);
-        debugPrint("Saving patient done with id: $pId");
+        int pId;
+        if (!isOldPatient) {
+          debugPrint("Saving patient...");
+          Patient patient = Patient(patientId: patientId, patientName: patientName, age: age, sex: sex);
+          pId = await DBProvider.db.insertPatient(patient);
+          debugPrint("Saving patient done with id: $pId");
+        } else {
+          pId = oldPatientId;
+        }
 
         debugPrint("Saving appointment...");
         Appointment appointment = Appointment(patientId: pId, dateTime: dateTime);
