@@ -38,14 +38,28 @@ class _EyeCaptureSplashScreenState extends State<EyeCaptureSplashScreen> {
         bloc: _splashBloc,
         listener: (context, state) {
           if (state is DataFetchSuccessState) {
-            // TODO: go to pin page or patient selection page depending on data fetch
-            Navigator.pushReplacement(
+            if(state.isLoginRequired) {
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => PinInputPage(),
-                ));
+                ),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PatientTypeSelectionPage(),
+                ),
+              );
+            }
           } else if (state is DataFetchFailureState) {
-            print("Something went wrong");
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    "Something went wrong. Please restart the application."),
+              ),
+            );
           }
         },
         child: Column(

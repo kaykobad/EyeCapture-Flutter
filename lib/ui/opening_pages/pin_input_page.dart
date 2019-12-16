@@ -2,6 +2,7 @@ import 'package:eye_capture/constants/numbers.dart';
 import 'package:eye_capture/constants/strings.dart';
 import 'package:eye_capture/ui/opening_pages/patient_selection_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PinInputPage extends StatefulWidget {
   @override
@@ -82,12 +83,16 @@ class _PinInputPageState extends State<PinInputPage> {
     );
   }
 
-  void _validateInputs() {
+  void _validateInputs() async {
     if (_formKey.currentState.validate()) {
       String pin = _pinInputController.text;
       print("$pin");
 
       if (pin == "131295") {
+        // set that login is not required
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool("isFirstTime", false);
+
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => PatientTypeSelectionPage(),
