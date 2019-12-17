@@ -71,10 +71,10 @@ class _PinInputPageState extends State<PinInputPage> {
           borderSide: BorderSide(color: Colors.blueGrey, width: 0.0),
         ),
       ),
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
       controller: _pinInputController,
       validator: (value) {
-        RegExp ageExp = RegExp(r"^\d*$");
+        RegExp ageExp = RegExp(r"^[A-Za-z0-9_]*$");
         if (!ageExp.hasMatch(value)) {
           return "Please enter a valid pin";
         }
@@ -88,7 +88,7 @@ class _PinInputPageState extends State<PinInputPage> {
       String pin = _pinInputController.text;
       print("$pin");
 
-      if (pin == "131295") {
+      if (pin == "amslergrid789108") {
         // set that login is not required
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool("isFirstTime", false);

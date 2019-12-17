@@ -38,11 +38,11 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
     _isLoading = true;
   }
 
-  Future _corpImage() {
+  _corpImage() {
     if (widget.zoomLevel > 1.11) {
       editor.Image image =
-      editor.decodeImage(File(widget.imagePath).readAsBytesSync());
-      int minWidth = 1080;
+          editor.decodeImage(File(widget.imagePath).readAsBytesSync());
+      int minWidth = 1920;
       image = editor.copyResize(image, width: minWidth);
       int oHeight = image.height;
       int oWidth = image.width;

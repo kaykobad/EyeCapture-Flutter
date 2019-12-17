@@ -33,7 +33,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
     super.initState();
     isFlashOn = false;
     _isLoading = false;
-    scale = 1.0;
+    scale = 3.0;
     eyeSelector = 0;
     initCamera();
     //initLamp();

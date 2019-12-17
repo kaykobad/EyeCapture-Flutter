@@ -1,4 +1,4 @@
-const String APP_NAME = "Eye Capture";
+const String APP_NAME = "Bangla Scope";
 const String PATIENT_SELECTION_PAGE_TITLE = "Patient Selection";
 const String PATIENT_SELECTION_PROMPT = "Select Patient Type";
 const String NEW_PATIENT_BUTTON = "New Patient";
