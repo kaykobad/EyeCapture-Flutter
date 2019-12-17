@@ -26,11 +26,13 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
   List cameras;
   int selectedCameraIdx;
   String imagePath;
+  bool _isLoading;
 
   @override
   void initState() {
     super.initState();
     isFlashOn = false;
+    _isLoading = false;
     scale = 1.0;
     eyeSelector = 0;
     initCamera();
@@ -146,13 +148,21 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
   }
 
   Widget _cameraPreviewWidget() {
-    if (controller == null || !controller.value.isInitialized) {
-      return const Text(
-        'Loading',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20.0,
-          fontWeight: FontWeight.w900,
+    if (controller == null || !controller.value.isInitialized || _isLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(height: 10.0),
+            Text(
+              "Processing image, please wait...",
+              style: TextStyle(
+                fontSize: REGULAR_FONT_SIZE,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -262,6 +272,9 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
 
   void _onCapturePressed(context) async {
     print("Capture Button Pressed");
+    setState(() {
+      _isLoading = true;
+    });
     try {
       String dateTime = DateTime.now().toString();
       final path = join(
@@ -272,6 +285,9 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
           "$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
       await controller.takePicture(path);
 
+      setState(() {
+        _isLoading = false;
+      });
       Navigator.push(
         context,
         MaterialPageRoute(

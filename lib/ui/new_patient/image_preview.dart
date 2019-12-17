@@ -6,6 +6,7 @@ import 'package:eye_capture/ui/new_patient/new_patient_bloc.dart';
 import 'package:eye_capture/ui/new_patient/new_patient_event.dart';
 import 'package:eye_capture/ui/new_patient/report.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as editor;
 
 class ImagePreviewWithButton extends StatefulWidget {
   final NewPatientBloc newPatientBloc;
@@ -29,10 +30,76 @@ class ImagePreviewWithButton extends StatefulWidget {
 
 class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   double width;
+  bool _isLoading = true;
+
+  @override
+  initState() {
+    super.initState();
+    _isLoading = true;
+  }
+
+  Future _corpImage() {
+    if(widget.zoomLevel > 1.11) {
+      editor.Image image =
+      editor.decodeImage(File(widget.imagePath).readAsBytesSync());
+      int minWidth = 1080;
+      image = editor.copyResize(image, width: minWidth);
+      int oHeight = image.height;
+      int oWidth = image.width;
+      int rHeight = (oHeight / widget.zoomLevel).round();
+      int rWidth = (oWidth / widget.zoomLevel).round();
+      int startX = ((oWidth - rWidth) / 2).round();
+      int startY = ((oHeight - rHeight) / 2).round();
+      print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
+      editor.Image newImage =
+      editor.copyCrop(image, startX, startY, rWidth, rHeight);
+
+      print("Resizing done, writing file...");
+      if (widget.imagePath.endsWith(".png") ||
+          widget.imagePath.endsWith(".PNG")) {
+        File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
+      } else {
+        File(widget.imagePath)..writeAsBytesSync(editor.encodeJpg(newImage));
+      }
+      print("Writing done...");
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  // does not work
+  Future _resizeAndZoom() {
+    editor.Image image =
+    editor.decodeImage(File(widget.imagePath).readAsBytesSync());
+    int minWidth = 1080;
+    image = editor.copyResize(image, width: minWidth);
+    int oHeight = image.height;
+    int oWidth = image.width;
+    int rHeight = (oHeight * widget.zoomLevel).round();
+    int rWidth = (oWidth * widget.zoomLevel).round();
+    print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
+    editor.Image newImage =
+    editor.copyResize(image, height: rHeight, width: rWidth);
+
+    print("Resizing done, writing file...");
+    if (widget.imagePath.endsWith(".png") ||
+        widget.imagePath.endsWith(".PNG")) {
+      File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
+    } else {
+      File(widget.imagePath)..writeAsBytesSync(editor.encodeJpg(newImage));
+    }
+    print("Writing done...");
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    width = MediaQuery.of(context).size.width - (PAGE_PADDING*2);
+    width = MediaQuery.of(context).size.width - (PAGE_PADDING * 2);
+    _corpImage();
+    //_resizeAndZoom();
 
     return Scaffold(
       appBar: AppBar(
@@ -40,21 +107,38 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         title: Text(IMAGE_PREVIEW_APPBAR),
       ),
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(PAGE_PADDING),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _getEyeDescription(),
-              SizedBox(height: 10.0),
-              Center(
-                child: _imagePreview(),
+        child: _isLoading
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    SizedBox(height: 10.0),
+                    Text(
+                      "Processing image, please wait...",
+                      style: TextStyle(
+                        fontSize: REGULAR_FONT_SIZE,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                padding: EdgeInsets.all(PAGE_PADDING),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _getEyeDescription(),
+                    SizedBox(height: 10.0),
+                    Center(
+                      child: _imagePreview(),
+                    ),
+                    SizedBox(height: 25.0),
+                    _getControllerButtons(),
+                  ],
+                ),
               ),
-              SizedBox(height: 25.0),
-              _getControllerButtons(),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -138,9 +222,13 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
           widget.zoomLevel,
           widget.eyeDescription,
         ));
-        Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => ReportPreview(newPatientBloc: widget.newPatientBloc,),
-        ));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReportPreview(
+                newPatientBloc: widget.newPatientBloc,
+              ),
+            ));
       },
     );
   }
