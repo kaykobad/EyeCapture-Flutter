@@ -39,7 +39,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   }
 
   Future _corpImage() {
-    if(widget.zoomLevel > 1.11) {
+    if (widget.zoomLevel > 1.11) {
       editor.Image image =
       editor.decodeImage(File(widget.imagePath).readAsBytesSync());
       int minWidth = 1080;
@@ -52,7 +52,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
       int startY = ((oHeight - rHeight) / 2).round();
       print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
       editor.Image newImage =
-      editor.copyCrop(image, startX, startY, rWidth, rHeight);
+          editor.copyCrop(image, startX, startY, rWidth, rHeight);
 
       print("Resizing done, writing file...");
       if (widget.imagePath.endsWith(".png") ||
@@ -71,7 +71,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   // does not work
   Future _resizeAndZoom() {
     editor.Image image =
-    editor.decodeImage(File(widget.imagePath).readAsBytesSync());
+        editor.decodeImage(File(widget.imagePath).readAsBytesSync());
     int minWidth = 1080;
     image = editor.copyResize(image, width: minWidth);
     int oHeight = image.height;
@@ -80,7 +80,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
     int rWidth = (oWidth * widget.zoomLevel).round();
     print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
     editor.Image newImage =
-    editor.copyResize(image, height: rHeight, width: rWidth);
+        editor.copyResize(image, height: rHeight, width: rWidth);
 
     print("Resizing done, writing file...");
     if (widget.imagePath.endsWith(".png") ||
@@ -124,19 +124,21 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
                   ],
                 ),
               )
-            : Container(
-                padding: EdgeInsets.all(PAGE_PADDING),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _getEyeDescription(),
-                    SizedBox(height: 10.0),
-                    Center(
-                      child: _imagePreview(),
-                    ),
-                    SizedBox(height: 25.0),
-                    _getControllerButtons(),
-                  ],
+            : SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(PAGE_PADDING),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _getEyeDescription(),
+                      SizedBox(height: 10.0),
+                      Center(
+                        child: _imagePreview(),
+                      ),
+                      SizedBox(height: 25.0),
+                      _getControllerButtons(),
+                    ],
+                  ),
                 ),
               ),
       ),

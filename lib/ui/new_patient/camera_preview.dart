@@ -113,7 +113,6 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
               flex: 1,
               child: _cameraPreviewWidget(),
             ),
-            SizedBox(height: 25.0),
           ],
         ),
       ),
@@ -173,7 +172,12 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
           scale: scale,
           child: RotatedBox(
             quarterTurns: 2,
-            child: CameraPreview(controller),
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: CameraPreview(controller),
+              ),
+            ),
           ),
         ),
         Container(
