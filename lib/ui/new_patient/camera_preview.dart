@@ -68,7 +68,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       await controller.dispose();
     }
 
-    controller = CameraController(cameraDescription, ResolutionPreset.high);
+    controller = CameraController(cameraDescription, ResolutionPreset.max);
     controller.addListener(() {
       if (mounted) {
         setState(() {});
@@ -79,6 +79,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
     });
     try {
       await controller.initialize();
+      hasFlashLight = await controller.hasFlash;
     } on CameraException catch (e) {
       _showCameraException(e);
     }
@@ -141,8 +142,8 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       children: <Widget>[
         _eyeToggleRowWidget(),
         _captureControlRowWidget(context),
-        //_flashToggleRowWidget(),
-        Spacer(),
+        _flashToggleRowWidget(),
+        //Spacer(),
       ],
     );
   }
@@ -228,12 +229,27 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
         child: FlatButton.icon(
           onPressed: () {
             print("Flash mode switched");
+            _toggleFlash();
           },
           icon: isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
           label: isFlashOn ? Text("On") : Text("Off"),
         ),
       ),
     );
+  }
+
+  _toggleFlash() async {
+    if(hasFlashLight && !isFlashOn) {
+      await controller.flashOn();
+      setState(() {
+        isFlashOn = !isFlashOn;
+      });
+    } else {
+      await controller.flashOff();
+      setState(() {
+        isFlashOn = false;
+      });
+    }
   }
 
   Widget _eyeToggleRowWidget() {
@@ -293,6 +309,9 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       setState(() {
         _isLoading = false;
       });
+
+      await controller.flashOff();
+      isFlashOn = false;
       Navigator.push(
         context,
         MaterialPageRoute(

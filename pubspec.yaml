@@ -24,7 +24,8 @@ dependencies:
   bloc: ^2.0.0
   flutter_bloc: ^2.1.1
   intl: ^0.16.0
-  camera: any
+  camera:
+    path: './plugin/camera'
   sqflite: any
   path: ^1.6.2
   path_provider: any
