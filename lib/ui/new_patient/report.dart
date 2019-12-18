@@ -15,6 +15,7 @@ import 'package:path/path.dart' as pathPlugin;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidget;
+import 'package:printing/printing.dart';
 
 class ReportPreview extends StatefulWidget {
   final NewPatientBloc newPatientBloc;
@@ -372,5 +373,10 @@ class _ReportPreviewState extends State<ReportPreview> {
     debugPrint("Saving file to path: $path");
     File f = File(path);
     f.writeAsBytesSync(pdf.save());
+
+    debugPrint("Starting print....");
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save());
+    debugPrint("Ending print....");
   }
 }
