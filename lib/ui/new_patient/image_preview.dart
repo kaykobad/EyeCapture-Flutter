@@ -39,23 +39,22 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   }
 
   _corpImage() {
-    if (widget.zoomLevel > 1.11) {
-      editor.Image image =
-          editor.decodeImage(File(widget.imagePath).readAsBytesSync());
-      int minWidth = 1920;
-      int oHeight = image.height;
-      int oWidth = image.width;
-      int rHeight = (oHeight / widget.zoomLevel).round();
-      int rWidth = (oWidth / widget.zoomLevel).round();
-      int startX = ((oWidth - rWidth) / 2).round();
-      int startY = ((oHeight - rHeight) / 2).round();
+    editor.Image image =
+        editor.decodeImage(File(widget.imagePath).readAsBytesSync());
+    int minWidth = 1920;
+    int oHeight = image.height;
+    int oWidth = image.width;
+    int rHeight = (oHeight / widget.zoomLevel).round();
+    int rWidth = (oWidth / widget.zoomLevel).round();
+    int startX = ((oWidth - rWidth) / 2).round();
+    int startY = ((oHeight - rHeight) / 2).round();
 
-      editor.Image newImage =
-          editor.copyCrop(image, startX, startY, rWidth, rHeight);
-      newImage = editor.copyResize(newImage, width: minWidth, interpolation: editor.Interpolation.cubic);
+    editor.Image newImage =
+        editor.copyCrop(image, startX, startY, rWidth, rHeight);
+    newImage = editor.copyResize(newImage,
+        width: minWidth, interpolation: editor.Interpolation.cubic);
 
-      File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
-    }
+    File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
     setState(() {
       _isLoading = false;
     });
@@ -187,12 +186,12 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
           widget.eyeDescription,
         ));
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ReportPreview(
-                newPatientBloc: widget.newPatientBloc,
-              ),
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReportPreview(
+              newPatientBloc: widget.newPatientBloc,
             ),
+          ),
         );
       },
     );
