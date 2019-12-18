@@ -20,6 +20,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
   bool isFlashOn;
   bool hasFlashLight;
   List<String> eyes = [LEFT_EYE, RIGHT_EYE];
+  List<String> camEyes = [CAM_LEFT_EYE, CAM_RIGHT_EYE];
   int eyeSelector;
   double scale;
   CameraController controller;
@@ -247,7 +248,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
             });
           },
           icon: Icon(Icons.remove_red_eye),
-          label: Text(eyes[eyeSelector]),
+          label: Text(camEyes[eyeSelector]),
         ),
       ),
     );
