@@ -10,10 +10,10 @@ import 'package:eye_capture/ui/opening_pages/patient_selection_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart';
-import 'package:path/path.dart' as prefix1;
+import 'package:path/path.dart' as pathPlugin;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as prefix0;
+import 'package:pdf/widgets.dart' as pdfWidget;
 
 class ViewReport extends StatefulWidget {
   final OldPatientBloc oldPatientBloc;
@@ -61,7 +61,7 @@ class _ViewReportState extends State<ViewReport> {
 
   @override
   Widget build(BuildContext context) {
-    width = MediaQuery.of(context).size.width - (PAGE_PADDING*4);
+    width = MediaQuery.of(context).size.width - (PAGE_PADDING * 4);
 
     return Scaffold(
       appBar: _getAppBar(),
@@ -277,7 +277,17 @@ class _ViewReportState extends State<ViewReport> {
   }
 
   _generatePdf(context, imagePath, eyeDescription) async {
-    final pdf = prefix0.Document();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Row(
+        children: <Widget>[
+          CircularProgressIndicator(),
+          SizedBox(width: 15.0),
+          Text("Generating report for this patient..."),
+        ],
+      ),
+    ));
+
+    final pdf = pdfWidget.Document();
 
     var img = decodeImage(File(imagePath).readAsBytesSync());
     int h = img.height;
@@ -285,6 +295,9 @@ class _ViewReportState extends State<ViewReport> {
     int sqSize = h < w ? h : w;
     img = copyResizeCropSquare(img, sqSize);
     img = flip(img, Flip.both);
+    int radius = (sqSize / 2).round();
+    img =
+        drawCircle(img, radius, radius, (radius - 10), getColor(96, 125, 139));
     final image = PdfImage(
       pdf.document,
       image: img.data.buffer.asUint8List(),
@@ -292,43 +305,61 @@ class _ViewReportState extends State<ViewReport> {
       height: img.height,
     );
 
-    pdf.addPage(prefix0.MultiPage(
-      build: (prefix0.Context context) => <prefix0.Widget>[
-        prefix0.Header(
+    pdf.addPage(pdfWidget.MultiPage(
+      pageFormat: PdfPageFormat.a4.copyWith(
+          marginLeft: 0.5 * PdfPageFormat.cm,
+          marginRight: 0.5 * PdfPageFormat.cm),
+      build: (pdfWidget.Context context) => <pdfWidget.Widget>[
+        pdfWidget.Header(
+          padding: pdfWidget.EdgeInsets.only(
+              left: 1 * PdfPageFormat.cm, right: 1 * PdfPageFormat.cm),
           level: 0,
-          child: prefix0.Column(
-            mainAxisAlignment: prefix0.MainAxisAlignment.center,
-            children: <prefix0.Widget>[
-              prefix0.Row(
-                mainAxisAlignment: prefix0.MainAxisAlignment.spaceBetween,
-                children: <prefix0.Widget>[
-                  prefix0.Text(
-                      "Patient Name: ${widget.patient.patientName}",
-                      textScaleFactor: 1.3),
-                  prefix0.Text("ID: ${widget.patient.patientId}",
-                      textScaleFactor: 1.2),
+          child: pdfWidget.Column(
+            mainAxisAlignment: pdfWidget.MainAxisAlignment.center,
+            children: <pdfWidget.Widget>[
+              pdfWidget.Row(
+                mainAxisAlignment: pdfWidget.MainAxisAlignment.spaceBetween,
+                children: <pdfWidget.Widget>[
+                  pdfWidget.Text(
+                    "Patient Name: ${widget.patient.patientName}",
+                    textScaleFactor: 1.3,
+                    style: pdfWidget.TextStyle(
+                        fontWeight: pdfWidget.FontWeight.bold),
+                  ),
+                  pdfWidget.Text(
+                    "ID: ${widget.patient.patientId}",
+                    textScaleFactor: 1.2,
+                    style: pdfWidget.TextStyle(
+                        fontWeight: pdfWidget.FontWeight.bold),
+                  ),
                 ],
               ),
-              prefix0.SizedBox(height: 7),
-              prefix0.Row(
-                mainAxisAlignment: prefix0.MainAxisAlignment.spaceBetween,
-                children: <prefix0.Widget>[
-                  prefix0.Text("Sex: ${widget.patient.sex}"),
-                  prefix0.Text(
-                      "Age: ${widget.patient.age.toString()} years"),
-                  prefix0.Text("Date: ${widget.appointment.dateTime.substring(0, 19)}"),
+              pdfWidget.SizedBox(height: 7),
+              pdfWidget.Row(
+                mainAxisAlignment: pdfWidget.MainAxisAlignment.spaceBetween,
+                children: <pdfWidget.Widget>[
+                  pdfWidget.Text("Sex: ${widget.patient.sex}"),
+                  pdfWidget.Text("Age: ${widget.patient.age.toString()} years"),
+                  pdfWidget.Text(
+                      "Date: ${widget.appointment.dateTime.substring(0, 19)}"),
                 ],
               ),
-              prefix0.SizedBox(height: 10),
-              prefix0.Text("$eyeDescription", textScaleFactor: 1.3),
+              pdfWidget.SizedBox(height: 10),
+              pdfWidget.Text(
+                "$eyeDescription",
+                textScaleFactor: 1.3,
+                style:
+                    pdfWidget.TextStyle(fontWeight: pdfWidget.FontWeight.bold),
+              ),
+              pdfWidget.SizedBox(height: 7),
             ],
           ),
         ),
-        prefix0.Image(image),
+        pdfWidget.Image(image),
       ],
     ));
 
-    final path = prefix1.join((await getExternalStorageDirectory()).path,
+    final path = pathPlugin.join((await getExternalStorageDirectory()).path,
         "${widget.patient.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf");
     debugPrint("Saving file to path: $path");
     File f = File(path);

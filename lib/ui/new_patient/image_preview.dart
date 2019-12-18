@@ -43,7 +43,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
       editor.Image image =
           editor.decodeImage(File(widget.imagePath).readAsBytesSync());
       int minWidth = 1920;
-      image = editor.copyResize(image, width: minWidth);
       int oHeight = image.height;
       int oWidth = image.width;
       int rHeight = (oHeight / widget.zoomLevel).round();
@@ -53,6 +52,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
       print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
       editor.Image newImage =
           editor.copyCrop(image, startX, startY, rWidth, rHeight);
+      newImage = editor.copyResize(newImage, width: minWidth, interpolation: editor.Interpolation.cubic);
 
       print("Resizing done, writing file...");
       if (widget.imagePath.endsWith(".png") ||
