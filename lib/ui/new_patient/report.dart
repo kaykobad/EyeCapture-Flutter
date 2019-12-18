@@ -30,7 +30,6 @@ class _ReportPreviewState extends State<ReportPreview> {
   List<String> eyes = [LEFT_EYE, RIGHT_EYE];
   List<Eye> leftEyes = List<Eye>();
   List<Eye> rightEyes = List<Eye>();
-  bool _isSaving;
   double width;
 
   @override
@@ -43,9 +42,6 @@ class _ReportPreviewState extends State<ReportPreview> {
         rightEyes.add(e);
       }
     }
-
-    _isSaving = false;
-    print("${leftEyes.length}, ${rightEyes.length}");
   }
 
   @override
@@ -63,9 +59,7 @@ class _ReportPreviewState extends State<ReportPreview> {
         bloc: widget.newPatientBloc,
         listener: (context, state) {
           if (state is SavingPatientState) {
-            setState(() {
-              _isSaving = true;
-            });
+
           } else if (state is SavingPatientSuccessState) {
             widget.newPatientBloc?.close();
             Navigator.pushAndRemoveUntil(
@@ -76,9 +70,6 @@ class _ReportPreviewState extends State<ReportPreview> {
               (Route<dynamic> routes) => false,
             );
           } else if (state is SavingPatientFailedState) {
-            setState(() {
-              _isSaving = false;
-            });
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text("Saving failed, please try again"),
             ));
@@ -193,11 +184,7 @@ class _ReportPreviewState extends State<ReportPreview> {
           return Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  debugPrint("Generating report...");
-                  _generatePdf(context, leftEyes[idx].imagePath, eyes[0]);
-                  debugPrint("Done Generating report...");
-                },
+                onTap: () => _generatePdf(context, leftEyes[idx].imagePath, eyes[0]),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: Container(
@@ -244,11 +231,7 @@ class _ReportPreviewState extends State<ReportPreview> {
           return Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  debugPrint("Generating report...");
-                  _generatePdf(context, rightEyes[idx].imagePath, eyes[1]);
-                  debugPrint("Done Generating report...");
-                },
+                onTap: () => _generatePdf(context, rightEyes[idx].imagePath, eyes[1]),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: Container(
@@ -375,12 +358,9 @@ class _ReportPreviewState extends State<ReportPreview> {
         fileName);
 
     try {
-      debugPrint("Starting print....");
       await Printing.layoutPdf(
           onLayout: (PdfPageFormat format) async => pdf.save());
-      debugPrint("Ending print....");
     } on Exception catch (e) {
-      debugPrint("Saving file to path: $path");
       File f = File(path);
       f.writeAsBytesSync(pdf.save());
       await Printing.sharePdf(bytes: pdf.save(), filename: fileName);

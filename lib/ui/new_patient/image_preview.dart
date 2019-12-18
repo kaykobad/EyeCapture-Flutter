@@ -49,14 +49,12 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
       int rWidth = (oWidth / widget.zoomLevel).round();
       int startX = ((oWidth - rWidth) / 2).round();
       int startY = ((oHeight - rHeight) / 2).round();
-      print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
+
       editor.Image newImage =
           editor.copyCrop(image, startX, startY, rWidth, rHeight);
       newImage = editor.copyResize(newImage, width: minWidth, interpolation: editor.Interpolation.cubic);
 
-      print("Resizing done, writing file...");
       File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
-      print("Writing done...");
     }
     setState(() {
       _isLoading = false;
@@ -158,10 +156,8 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         vertical: BUTTON_PADDING_TOP,
       ),
       onPressed: () {
-        debugPrint("Discard button pressed");
         File f = File(widget.imagePath);
-        var isDeleted = f.delete();
-        debugPrint(isDeleted.toString());
+        f.delete();
         Navigator.of(context).pop();
       },
     );
@@ -184,7 +180,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         vertical: BUTTON_PADDING_TOP,
       ),
       onPressed: () {
-        debugPrint("Save button pressed");
         widget.newPatientBloc.add(SaveNewPatientEyeEvent(
           widget.imagePath,
           widget.dateTime,
@@ -197,7 +192,8 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
               builder: (context) => ReportPreview(
                 newPatientBloc: widget.newPatientBloc,
               ),
-            ));
+            ),
+        );
       },
     );
   }
@@ -219,7 +215,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
         vertical: BUTTON_PADDING_TOP,
       ),
       onPressed: () {
-        debugPrint("Save and continue button pressed");
         widget.newPatientBloc.add(SaveNewPatientEyeEvent(
           widget.imagePath,
           widget.dateTime,

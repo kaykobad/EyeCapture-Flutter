@@ -221,10 +221,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
       child: Align(
         alignment: Alignment.centerRight,
         child: FlatButton.icon(
-          onPressed: () {
-            print("Flash mode switched");
-            _toggleFlash();
-          },
+          onPressed: _toggleFlash,
           icon: isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
           label: isFlashOn ? Text("On") : Text("Off"),
         ),
@@ -252,7 +249,6 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
         alignment: Alignment.centerLeft,
         child: FlatButton.icon(
           onPressed: () {
-            print("Eye mode switched");
             setState(() {
               eyeSelector = (eyeSelector + 1) % 2;
             });
@@ -286,7 +282,6 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
   }
 
   void _onCapturePressed(context) async {
-    print("Capture Button Pressed");
     setState(() {
       _isLoading = true;
     });
@@ -296,8 +291,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
         (await getExternalStorageDirectory()).path,
         '${dateTime.replaceAll(" ", "_").substring(0, 19)}.png',
       );
-      debugPrint(
-          "$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
+
       await controller.takePicture(path);
 
       await controller.flashOff();

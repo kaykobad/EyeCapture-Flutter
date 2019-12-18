@@ -4,7 +4,12 @@ class Eye {
   final String dateTime;
   final double zoomLevel;
 
-  Eye(this.imagePath, this.eyeDescription, this.dateTime, this.zoomLevel);
+  Eye(
+    this.imagePath,
+    this.eyeDescription,
+    this.dateTime,
+    this.zoomLevel,
+  );
 
   @override
   String toString() => "$imagePath - $eyeDescription - $dateTime - $zoomLevel";

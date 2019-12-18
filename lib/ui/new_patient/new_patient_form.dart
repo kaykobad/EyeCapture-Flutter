@@ -158,7 +158,6 @@ class _NewPatientFormState extends State<NewPatientForm> {
   void _onRadioButtonChanged(String value) {
     setState(() {
       _radioValue = value;
-      print("$_radioValue");
     });
   }
 
@@ -204,8 +203,6 @@ class _NewPatientFormState extends State<NewPatientForm> {
       String patientName = _patientNameController.text;
       double patientAge = double.tryParse(_patientAgeController.text);
 
-      print("$patientId - $patientName - $patientAge");
-
       _newPatientBloc.add(SaveNewPatientInfoEvent(
           patientName, patientId, patientAge, _radioValue, _dateTime));
       Navigator.of(context).push(
@@ -238,10 +235,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
         horizontal: BUTTON_PADDING_LEFT,
         vertical: BUTTON_PADDING_TOP,
       ),
-      onPressed: () {
-        print("Take photo pressed");
-        _validateInputs();
-      },
+      onPressed: _validateInputs,
     );
   }
 }

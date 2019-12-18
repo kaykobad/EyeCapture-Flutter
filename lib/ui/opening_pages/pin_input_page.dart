@@ -25,7 +25,7 @@ class _PinInputPageState extends State<PinInputPage> {
   @override
   void dispose() {
     super.dispose();
-    _pinInputController.dispose();
+    _pinInputController?.dispose();
   }
 
   @override
@@ -86,7 +86,6 @@ class _PinInputPageState extends State<PinInputPage> {
   void _validateInputs() async {
     if (_formKey.currentState.validate()) {
       String pin = _pinInputController.text;
-      print("$pin");
 
       if (pin == "amslergrid789108") {
         // set that login is not required
@@ -123,10 +122,7 @@ class _PinInputPageState extends State<PinInputPage> {
         horizontal: BUTTON_PADDING_LEFT,
         vertical: BUTTON_PADDING_TOP,
       ),
-      onPressed: () {
-        print("Submit pressed");
-        _validateInputs();
-      },
+      onPressed: _validateInputs,
     );
   }
 

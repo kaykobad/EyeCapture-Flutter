@@ -50,8 +50,6 @@ class _ViewReportState extends State<ViewReport> {
         rightEyes.add(e);
       }
     }
-
-    print("${leftEyes.length}, ${rightEyes.length}");
   }
 
   @override
@@ -184,11 +182,7 @@ class _ViewReportState extends State<ViewReport> {
           return Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  debugPrint("Generating report...");
-                  _generatePdf(context, leftEyes[idx].imagePath, eyes[0]);
-                  debugPrint("Done Generating report...");
-                },
+                onTap: () => _generatePdf(context, leftEyes[idx].imagePath, eyes[0]),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: Container(
@@ -235,11 +229,7 @@ class _ViewReportState extends State<ViewReport> {
           return Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  debugPrint("Generating report...");
-                  _generatePdf(context, rightEyes[idx].imagePath, eyes[1]);
-                  debugPrint("Done Generating report...");
-                },
+                onTap: () => _generatePdf(context, rightEyes[idx].imagePath, eyes[1]),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: Container(
@@ -364,12 +354,9 @@ class _ViewReportState extends State<ViewReport> {
     final path = pathPlugin.join((await getExternalStorageDirectory()).path,
         fileName);
     try {
-      debugPrint("Starting print....");
       await Printing.layoutPdf(
           onLayout: (PdfPageFormat format) async => pdf.save());
-      debugPrint("Ending print....");
     } on Exception catch (e) {
-      debugPrint("Saving file to path: $path");
       File f = File(path);
       f.writeAsBytesSync(pdf.save());
       await Printing.sharePdf(bytes: pdf.save(), filename: fileName);

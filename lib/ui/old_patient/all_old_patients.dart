@@ -27,6 +27,11 @@ class _AllOldPatientsState extends State<AllOldPatients> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
