@@ -55,41 +55,9 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
       newImage = editor.copyResize(newImage, width: minWidth, interpolation: editor.Interpolation.cubic);
 
       print("Resizing done, writing file...");
-      if (widget.imagePath.endsWith(".png") ||
-          widget.imagePath.endsWith(".PNG")) {
-        File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
-      } else {
-        File(widget.imagePath)..writeAsBytesSync(editor.encodeJpg(newImage));
-      }
+      File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
       print("Writing done...");
     }
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  // does not work
-  Future _resizeAndZoom() {
-    editor.Image image =
-        editor.decodeImage(File(widget.imagePath).readAsBytesSync());
-    int minWidth = 1080;
-    image = editor.copyResize(image, width: minWidth);
-    int oHeight = image.height;
-    int oWidth = image.width;
-    int rHeight = (oHeight * widget.zoomLevel).round();
-    int rWidth = (oWidth * widget.zoomLevel).round();
-    print("$oHeight X $oWidth => $rHeight X $rWidth -- ${widget.zoomLevel}");
-    editor.Image newImage =
-        editor.copyResize(image, height: rHeight, width: rWidth);
-
-    print("Resizing done, writing file...");
-    if (widget.imagePath.endsWith(".png") ||
-        widget.imagePath.endsWith(".PNG")) {
-      File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
-    } else {
-      File(widget.imagePath)..writeAsBytesSync(editor.encodeJpg(newImage));
-    }
-    print("Writing done...");
     setState(() {
       _isLoading = false;
     });
@@ -99,7 +67,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width - (PAGE_PADDING * 2);
     _corpImage();
-    //_resizeAndZoom();
 
     return Scaffold(
       appBar: AppBar(

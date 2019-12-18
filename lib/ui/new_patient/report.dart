@@ -51,7 +51,6 @@ class _ReportPreviewState extends State<ReportPreview> {
   @override
   void dispose() {
     super.dispose();
-    //widget.newPatientBloc?.close();
   }
 
   @override
@@ -70,10 +69,12 @@ class _ReportPreviewState extends State<ReportPreview> {
           } else if (state is SavingPatientSuccessState) {
             widget.newPatientBloc?.close();
             Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PatientTypeSelectionPage()),
-                (Route<dynamic> routes) => false);
+              context,
+              MaterialPageRoute(
+                builder: (context) => PatientTypeSelectionPage(),
+              ),
+              (Route<dynamic> routes) => false,
+            );
           } else if (state is SavingPatientFailedState) {
             setState(() {
               _isSaving = false;
@@ -289,7 +290,7 @@ class _ReportPreviewState extends State<ReportPreview> {
       content: Row(
         children: <Widget>[
           CircularProgressIndicator(),
-          SizedBox(width: 15.0),
+          SizedBox(width: 20.0),
           Text("Generating report for this patient..."),
         ],
       ),
@@ -368,15 +369,21 @@ class _ReportPreviewState extends State<ReportPreview> {
       ],
     ));
 
-    final path = pathPlugin.join((await getExternalStorageDirectory()).path,
-        "${widget.newPatientBloc.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf");
-    debugPrint("Saving file to path: $path");
-    File f = File(path);
-    f.writeAsBytesSync(pdf.save());
+    String fileName = "${widget.newPatientBloc.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf";
 
-    debugPrint("Starting print....");
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf.save());
-    debugPrint("Ending print....");
+    final path = pathPlugin.join((await getExternalStorageDirectory()).path,
+        fileName);
+
+    try {
+      debugPrint("Starting print....");
+      await Printing.layoutPdf(
+          onLayout: (PdfPageFormat format) async => pdf.save());
+      debugPrint("Ending print....");
+    } on Exception catch (e) {
+      debugPrint("Saving file to path: $path");
+      File f = File(path);
+      f.writeAsBytesSync(pdf.save());
+      await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
+    }
   }
 }

@@ -37,7 +37,6 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
     scale = 3.0;
     eyeSelector = 0;
     initCamera();
-    //initLamp();
   }
 
   @override
@@ -94,11 +93,6 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
 
     print('Error: ${e.code}\n${e.description}');
   }
-
-//  initLamp() async {
-//    hasFlashLight = await Torch.hasTorch;
-//    print("Has lamp: $hasFlashLight");
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -306,12 +300,12 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
           "$path - $dateTime - ${eyes[eyeSelector]} - ${scale.toString()}");
       await controller.takePicture(path);
 
+      await controller.flashOff();
       setState(() {
+        isFlashOn = false;
         _isLoading = false;
       });
 
-      await controller.flashOff();
-      isFlashOn = false;
       Navigator.push(
         context,
         MaterialPageRoute(

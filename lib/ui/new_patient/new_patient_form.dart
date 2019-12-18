@@ -206,11 +206,15 @@ class _NewPatientFormState extends State<NewPatientForm> {
 
       print("$patientId - $patientName - $patientAge");
 
-      _newPatientBloc.add(SaveNewPatientInfoEvent(patientName, patientId, patientAge, _radioValue, _dateTime));
-      Navigator.of(context).push(MaterialPageRoute(
+      _newPatientBloc.add(SaveNewPatientInfoEvent(
+          patientName, patientId, patientAge, _radioValue, _dateTime));
+      Navigator.of(context).push(
+        MaterialPageRoute(
           builder: (context) => LiveCameraPreview(
-                newPatientBloc: _newPatientBloc,
-              )));
+            newPatientBloc: _newPatientBloc,
+          ),
+        ),
+      );
     } else {
       setState(() {
         _autoValidate = true;

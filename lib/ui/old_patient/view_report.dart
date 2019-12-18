@@ -57,7 +57,6 @@ class _ViewReportState extends State<ViewReport> {
   @override
   void dispose() {
     super.dispose();
-    //widget.newPatientBloc?.close();
   }
 
   @override
@@ -360,15 +359,20 @@ class _ViewReportState extends State<ViewReport> {
       ],
     ));
 
-    final path = pathPlugin.join((await getExternalStorageDirectory()).path,
-        "${widget.patient.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf");
-    debugPrint("Saving file to path: $path");
-    File f = File(path);
-    f.writeAsBytesSync(pdf.save());
+    String fileName = "${widget.patient.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf";
 
-    debugPrint("Starting print....");
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf.save());
-    debugPrint("Ending print....");
+    final path = pathPlugin.join((await getExternalStorageDirectory()).path,
+        fileName);
+    try {
+      debugPrint("Starting print....");
+      await Printing.layoutPdf(
+          onLayout: (PdfPageFormat format) async => pdf.save());
+      debugPrint("Ending print....");
+    } on Exception catch (e) {
+      debugPrint("Saving file to path: $path");
+      File f = File(path);
+      f.writeAsBytesSync(pdf.save());
+      await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
+    }
   }
 }

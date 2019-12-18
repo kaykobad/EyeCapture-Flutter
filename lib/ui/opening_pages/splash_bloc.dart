@@ -14,7 +14,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         yield LoadingDataFetchState();
 
         // show splash screen
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(Duration(seconds: 2));
 
         // check if first time login
         SharedPreferences prefs = await SharedPreferences.getInstance();
