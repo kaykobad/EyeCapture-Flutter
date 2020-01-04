@@ -36,6 +36,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   initState() {
     super.initState();
     _isLoading = true;
+    _corpImage();
   }
 
   _corpImage() {
@@ -52,7 +53,7 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
     editor.Image newImage =
         editor.copyCrop(image, startX, startY, rWidth, rHeight);
     newImage = editor.copyResize(newImage,
-        width: minWidth, interpolation: editor.Interpolation.cubic);
+        width: minWidth, interpolation: editor.Interpolation.nearest);
 
     File(widget.imagePath)..writeAsBytesSync(editor.encodePng(newImage));
     setState(() {
@@ -63,7 +64,6 @@ class _ImagePreviewWithButtonState extends State<ImagePreviewWithButton> {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width - (PAGE_PADDING * 2);
-    _corpImage();
 
     return Scaffold(
       appBar: AppBar(

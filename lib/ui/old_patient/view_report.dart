@@ -69,16 +69,14 @@ class _ViewReportState extends State<ViewReport> {
         child: SafeArea(
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Container(
-              padding: EdgeInsets.all(PAGE_PADDING),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _getPatientDescription(),
-                  SizedBox(height: 20.0),
-                  _getEyeImages(),
-                ],
-              ),
+            padding: EdgeInsets.all(PAGE_PADDING),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _getPatientDescription(),
+                SizedBox(height: 20.0),
+                _getEyeImages(),
+              ],
             ),
           ),
         ),
@@ -175,6 +173,7 @@ class _ViewReportState extends State<ViewReport> {
   Widget _getLeftEyeImages() {
     if (leftEyes.length > 0) {
       return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemCount: leftEyes.length,
@@ -222,6 +221,7 @@ class _ViewReportState extends State<ViewReport> {
   Widget _getRightEyeImages() {
     if (rightEyes.length > 0) {
       return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemCount: rightEyes.length,
@@ -285,9 +285,7 @@ class _ViewReportState extends State<ViewReport> {
     int sqSize = h < w ? h : w;
     img = copyResizeCropSquare(img, sqSize);
     img = flip(img, Flip.both);
-    int radius = (sqSize / 2).round();
-    img =
-        drawCircle(img, radius, radius, (radius - 10), getColor(96, 125, 139));
+
     final image = PdfImage(
       pdf.document,
       image: img.data.buffer.asUint8List(),
@@ -345,7 +343,12 @@ class _ViewReportState extends State<ViewReport> {
             ],
           ),
         ),
-        pdfWidget.Image(image),
+//        pdfWidget.Image(image),
+      pdfWidget.ClipRRect(
+        child: pdfWidget.Image(image),
+        horizontalRadius: 275,
+        verticalRadius: 275,
+      ),
       ],
     ));
 
