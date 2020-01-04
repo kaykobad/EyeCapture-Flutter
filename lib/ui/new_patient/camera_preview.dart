@@ -34,7 +34,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
     super.initState();
     isFlashOn = false;
     _isLoading = false;
-    scale = 3.0;
+    scale = 3.5;
     eyeSelector = 0;
     initCamera();
   }
@@ -178,7 +178,7 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
         ),
         Container(
           margin: EdgeInsets.all(PAGE_PADDING),
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(
@@ -198,8 +198,8 @@ class _LiveCameraPreviewState extends State<LiveCameraPreview> {
           child: Slider(
             activeColor: Colors.blue,
             min: 1.0,
-            max: 3.0,
-            divisions: 20,
+            max: 3.5,
+            divisions: 25,
             value: scale,
             onChanged: (value) {
               setState(() {
