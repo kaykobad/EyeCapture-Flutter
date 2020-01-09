@@ -181,7 +181,8 @@ class _ViewReportState extends State<ViewReport> {
           return Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () => _generatePdf(context, leftEyes[idx].imagePath, eyes[0]),
+                onTap: () =>
+                    _generatePdf(context, leftEyes[idx].imagePath, eyes[0]),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: Container(
@@ -229,7 +230,8 @@ class _ViewReportState extends State<ViewReport> {
           return Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () => _generatePdf(context, rightEyes[idx].imagePath, eyes[1]),
+                onTap: () =>
+                    _generatePdf(context, rightEyes[idx].imagePath, eyes[1]),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: Container(
@@ -285,6 +287,7 @@ class _ViewReportState extends State<ViewReport> {
     int sqSize = h < w ? h : w;
     img = copyResizeCropSquare(img, sqSize);
     img = flip(img, Flip.both);
+    img = adjustColor(img, saturation: 2.2, gamma: 0.9);
 
     final image = PdfImage(
       pdf.document,
@@ -295,12 +298,13 @@ class _ViewReportState extends State<ViewReport> {
 
     pdf.addPage(pdfWidget.MultiPage(
       pageFormat: PdfPageFormat.a4.copyWith(
-          marginLeft: 0.5 * PdfPageFormat.cm,
-          marginRight: 0.5 * PdfPageFormat.cm),
+          marginLeft: 1 * PdfPageFormat.cm,
+          marginRight: 1 * PdfPageFormat.cm),
       build: (pdfWidget.Context context) => <pdfWidget.Widget>[
         pdfWidget.Header(
           padding: pdfWidget.EdgeInsets.only(
-              left: 1 * PdfPageFormat.cm, right: 1 * PdfPageFormat.cm),
+              left: 1 * PdfPageFormat.cm,
+              right: 1 * PdfPageFormat.cm),
           level: 0,
           child: pdfWidget.Column(
             mainAxisAlignment: pdfWidget.MainAxisAlignment.center,
@@ -344,18 +348,22 @@ class _ViewReportState extends State<ViewReport> {
           ),
         ),
 //        pdfWidget.Image(image),
-      pdfWidget.ClipRRect(
-        child: pdfWidget.Image(image),
-        horizontalRadius: 275,
-        verticalRadius: 275,
-      ),
+        pdfWidget.Container(
+          padding: pdfWidget.EdgeInsets.all(110.0),
+          child: pdfWidget.ClipRRect(
+            child: pdfWidget.Image(image),
+            horizontalRadius: 165,
+            verticalRadius: 165,
+          ),
+        ),
       ],
     ));
 
-    String fileName = "${widget.patient.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf";
+    String fileName =
+        "${widget.patient.patientName.replaceAll(" ", "_") + "_" + DateTime.now().toString().substring(0, 19).replaceAll(" ", "_")}.pdf";
 
-    final path = pathPlugin.join((await getExternalStorageDirectory()).path,
-        fileName);
+    final path =
+        pathPlugin.join((await getExternalStorageDirectory()).path, fileName);
     try {
       await Printing.layoutPdf(
           onLayout: (PdfPageFormat format) async => pdf.save());

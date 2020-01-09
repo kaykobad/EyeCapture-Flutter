@@ -287,6 +287,7 @@ class _ReportPreviewState extends State<ReportPreview> {
     int sqSize = h < w ? h : w;
     img = copyResizeCropSquare(img, sqSize);
     img = flip(img, Flip.both);
+    img = adjustColor(img, saturation: 2.2, gamma: 0.9);
 
     final image = PdfImage(
       pdf.document,
@@ -297,12 +298,13 @@ class _ReportPreviewState extends State<ReportPreview> {
 
     pdf.addPage(pdfWidget.MultiPage(
       pageFormat: PdfPageFormat.a4.copyWith(
-          marginLeft: 0.5 * PdfPageFormat.cm,
-          marginRight: 0.5 * PdfPageFormat.cm),
+          marginLeft: 1 * PdfPageFormat.cm,
+          marginRight: 1 * PdfPageFormat.cm),
       build: (pdfWidget.Context context) => <pdfWidget.Widget>[
         pdfWidget.Header(
           padding: pdfWidget.EdgeInsets.only(
-              left: 1 * PdfPageFormat.cm, right: 1 * PdfPageFormat.cm),
+              left: 1 * PdfPageFormat.cm,
+              right: 1 * PdfPageFormat.cm),
           level: 0,
           child: pdfWidget.Column(
             mainAxisAlignment: pdfWidget.MainAxisAlignment.center,
@@ -347,10 +349,13 @@ class _ReportPreviewState extends State<ReportPreview> {
           ),
         ),
         //pdfWidget.Image(image),
-        pdfWidget.ClipRRect(
-          child: pdfWidget.Image(image),
-          horizontalRadius: 275,
-          verticalRadius: 275,
+        pdfWidget.Container(
+          padding: pdfWidget.EdgeInsets.all(110.0),
+          child: pdfWidget.ClipRRect(
+            child: pdfWidget.Image(image),
+            horizontalRadius: 165,
+            verticalRadius: 165,
+          ),
         ),
       ],
     ));
